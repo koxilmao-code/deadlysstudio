@@ -14,39 +14,176 @@ export type Database = {
   }
   public: {
     Tables: {
-      tasks: {
+      change_logs: {
         Row: {
-          assigned_to: string | null
+          action: string
+          changed_by: string | null
+          changes: Json | null
           created_at: string
-          created_by: string | null
-          description: string | null
+          entity_id: string
+          entity_type: string
           id: string
-          priority: Database["public"]["Enums"]["task_priority"]
-          status: Database["public"]["Enums"]["task_status"]
-          title: string
+          reason: string | null
+        }
+        Insert: {
+          action: string
+          changed_by?: string | null
+          changes?: Json | null
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          action?: string
+          changed_by?: string | null
+          changes?: Json | null
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "change_logs_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      task_dependencies: {
+        Row: {
+          created_at: string
+          depends_on: string
+          id: string
+          task_id: string
+        }
+        Insert: {
+          created_at?: string
+          depends_on: string
+          id?: string
+          task_id: string
+        }
+        Update: {
+          created_at?: string
+          depends_on?: string
+          id?: string
+          task_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_dependencies_depends_on_fkey"
+            columns: ["depends_on"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_dependencies_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      task_notes: {
+        Row: {
+          author_id: string | null
+          content: string
+          created_at: string
+          id: string
+          note_type: string | null
+          task_id: string
           updated_at: string
         }
         Insert: {
-          assigned_to?: string | null
+          author_id?: string | null
+          content: string
           created_at?: string
-          created_by?: string | null
-          description?: string | null
           id?: string
-          priority?: Database["public"]["Enums"]["task_priority"]
-          status?: Database["public"]["Enums"]["task_status"]
-          title: string
+          note_type?: string | null
+          task_id: string
           updated_at?: string
         }
         Update: {
+          author_id?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          note_type?: string | null
+          task_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_notes_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_notes_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          assigned_to: string | null
+          common_mistakes: string | null
+          created_at: string
+          created_by: string | null
+          deadline: string | null
+          description: string | null
+          difficulty: string | null
+          id: string
+          priority: Database["public"]["Enums"]["task_priority"]
+          role_category: string | null
+          status: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at: string
+          why_it_matters: string | null
+        }
+        Insert: {
           assigned_to?: string | null
+          common_mistakes?: string | null
           created_at?: string
           created_by?: string | null
+          deadline?: string | null
           description?: string | null
+          difficulty?: string | null
           id?: string
           priority?: Database["public"]["Enums"]["task_priority"]
+          role_category?: string | null
+          status?: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at?: string
+          why_it_matters?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          common_mistakes?: string | null
+          created_at?: string
+          created_by?: string | null
+          deadline?: string | null
+          description?: string | null
+          difficulty?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["task_priority"]
+          role_category?: string | null
           status?: Database["public"]["Enums"]["task_status"]
           title?: string
           updated_at?: string
+          why_it_matters?: string | null
         }
         Relationships: [
           {
@@ -69,19 +206,73 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          role: string | null
           username: string
         }
         Insert: {
           created_at?: string
           id?: string
+          role?: string | null
           username: string
         }
         Update: {
           created_at?: string
           id?: string
+          role?: string | null
           username?: string
         }
         Relationships: []
+      }
+      wiki_pages: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          slug: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          category?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          slug: string
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wiki_pages_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wiki_pages_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

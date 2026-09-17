@@ -168,7 +168,7 @@ export function useCreateTask() {
 export function useUpdateTask() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, ...updates }: { id: string; [key: string]: any }) => {
+    mutationFn: async ({ id, ...updates }: { id: string } & Partial<Omit<Task, "id" | "creator" | "assignee">>) => {
       const { error } = await supabase.from("tasks").update(updates).eq("id", id);
       if (error) throw error;
     },

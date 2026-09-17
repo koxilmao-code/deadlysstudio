@@ -131,7 +131,7 @@ export default function TaskDetailPage({ currentUser }: Props) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
           <div>
             <span className="text-muted-foreground uppercase tracking-wider">Status</span>
-            <Select value={task.status} onValueChange={(v) => updateTask.mutate({ id: task.id, status: v })}>
+            <Select value={task.status} onValueChange={(v: TaskStatus) => updateTask.mutate({ id: task.id, status: v })}>
               <SelectTrigger className="mt-1 h-8 text-xs bg-background border-border"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{STATUS_CONFIG[s].label}</SelectItem>)}
@@ -140,7 +140,7 @@ export default function TaskDetailPage({ currentUser }: Props) {
           </div>
           <div>
             <span className="text-muted-foreground uppercase tracking-wider">Priority</span>
-            <Select value={task.priority} onValueChange={(v) => updateTask.mutate({ id: task.id, priority: v })}>
+            <Select value={task.priority} onValueChange={(v: TaskPriority) => updateTask.mutate({ id: task.id, priority: v })}>
               <SelectTrigger className="mt-1 h-8 text-xs bg-background border-border"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {["low", "medium", "high", "urgent"].map(p => <SelectItem key={p} value={p} className="capitalize">{p}</SelectItem>)}
@@ -149,7 +149,7 @@ export default function TaskDetailPage({ currentUser }: Props) {
           </div>
           <div>
             <span className="text-muted-foreground uppercase tracking-wider">Difficulty</span>
-            <Select value={task.difficulty} onValueChange={(v) => updateTask.mutate({ id: task.id, difficulty: v })}>
+            <Select value={task.difficulty} onValueChange={(v: TaskDifficulty) => updateTask.mutate({ id: task.id, difficulty: v })}>
               <SelectTrigger className="mt-1 h-8 text-xs bg-background border-border"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {["easy", "medium", "hard", "expert"].map(d => <SelectItem key={d} value={d} className="capitalize">{d}</SelectItem>)}
@@ -158,7 +158,7 @@ export default function TaskDetailPage({ currentUser }: Props) {
           </div>
           <div>
             <span className="text-muted-foreground uppercase tracking-wider">Role</span>
-            <Select value={task.role_category} onValueChange={(v) => updateTask.mutate({ id: task.id, role_category: v })}>
+            <Select value={task.role_category} onValueChange={(v: RoleCategory) => updateTask.mutate({ id: task.id, role_category: v })}>
               <SelectTrigger className="mt-1 h-8 text-xs bg-background border-border"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {["general", "scripter", "designer", "promoter"].map(r => <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>)}

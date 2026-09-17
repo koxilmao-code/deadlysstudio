@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deadly&#39;s Studio | Roblox Game Development</title>
+    <meta name="description" content="Deadly's Studio builds, scales, and operates high-performing Roblox experiences.">
+    <meta name="author" content="Deadly's Studio" />
+
+    
+    
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:title" content="Deadly&#39;s Studio | Roblox Game Development">
+    <meta name="twitter:title" content="Deadly&#39;s Studio | Roblox Game Development">
+    <meta property="og:description" content="We build, scale, and operate high-performing Roblox experiences.">
+    <meta name="twitter:description" content="We build, scale, and operate high-performing Roblox experiences.">
+</head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx?t=1789607956761"></script>
+  </body>
+</html>

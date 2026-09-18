@@ -7,11 +7,11 @@ import game6 from "@/assets/projects/game-6.png";
 import game7 from "@/assets/projects/game-7.png";
 import game8 from "@/assets/projects/game-8.png";
 import game9 from "@/assets/projects/game-9.png";
-import caleb from "@/assets/team/caleb.png";
-import marisa from "@/assets/team/marisa.png";
-import blast from "@/assets/team/blast.png";
-import shark from "@/assets/team/shark.png";
-import alpha from "@/assets/team/alpha.png";
+import calebAsset from "@/assets/team/caleb-headshot.png.asset.json";
+import marisaAsset from "@/assets/team/marisa-headshot.png.asset.json";
+import blastAsset from "@/assets/team/blast-headshot.png.asset.json";
+import sharkAsset from "@/assets/team/shark-headshot.png.asset.json";
+import alphaAsset from "@/assets/team/alpha-headshot.png.asset.json";
 
 export interface PortfolioProject {
   id: string;
@@ -38,12 +38,12 @@ export const defaultProjects: PortfolioProject[] = [
 ];
 
 export const team = [
-  { name: "Caleb", role: "CEO & CMO", description: "Runs the core pipeline and leads studio development strategy.", image: caleb },
+  { name: "Caleb", role: "CEO & CMO", description: "Runs the core pipeline and leads studio development strategy.", image: calebAsset.url },
   { name: "Oscar", role: "Lead Producer", description: "Directs cross-functional team roadmaps and execution workflows.", image: null },
-  { name: "Marisa", role: "Thumbnail Lead", description: "Architects high-conversion visual marketing assets and identity guidelines.", image: marisa },
-  { name: "Blast", role: "Game Dev Team (In-House)", description: "In-house SFX Artist", image: blast },
-  { name: "Shark", role: "Game Dev Team (In-House)", description: "Optimizes simulation frameworks, performance metrics, and client experiences.", image: shark },
-  { name: "Alpha", role: "Game Dev Team (In-House)", description: "Implements structural layout patterns, UI workflows, and system data pipelines.", image: alpha },
+  { name: "Marisa", role: "Thumbnail Lead", description: "Architects high-conversion visual marketing assets and identity guidelines.", image: marisaAsset.url },
+  { name: "Blast", role: "Game Dev Team (In-House)", description: "In-house SFX Artist", image: blastAsset.url },
+  { name: "Shark", role: "Game Dev Team (In-House)", description: "Optimizes simulation frameworks, performance metrics, and client experiences.", image: sharkAsset.url },
+  { name: "Alpha", role: "Game Dev Team (In-House)", description: "Implements structural layout patterns, UI workflows, and system data pipelines.", image: alphaAsset.url },
 ];
 
 export function readProjects(): PortfolioProject[] {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { PublicFooter, PublicHeader } from "@/components/PublicChrome";
 import { readProjects, team, type PortfolioProject } from "@/data/portfolio";
 
 const metrics = [
@@ -21,18 +21,7 @@ export default function StudioHome() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
-        <div className="studio-shell flex h-16 items-center justify-between">
-          <Link to="/" className="text-sm font-semibold uppercase">Deadly’s Studio</Link>
-          <nav className="flex items-center gap-6 text-xs text-muted-foreground" aria-label="Main navigation">
-            <a href="#work" className="transition-colors hover:text-foreground">Work</a>
-            <a href="#team" className="transition-colors hover:text-foreground">Studio</a>
-            <Button asChild variant="outline" size="sm" className="hidden rounded-none border-foreground bg-transparent px-4 text-foreground hover:bg-foreground hover:text-background sm:inline-flex">
-              <a href="mailto:hello@deadlystudio.dev">Start a project <ArrowUpRight /></a>
-            </Button>
-          </nav>
-        </div>
-      </header>
+      <PublicHeader />
 
       <main>
         <section className="studio-shell flex min-h-[88vh] flex-col justify-end pb-10 pt-32 md:pb-16">
@@ -93,7 +82,7 @@ export default function StudioHome() {
               {team.map((member, index) => (
                 <article key={member.name} className="group">
                   <div className="aspect-[4/5] overflow-hidden bg-card">
-                    {member.image ? <img src={member.image} alt={`${member.name}, ${member.role}`} className="h-full w-full object-cover object-center saturate-0 transition duration-500 group-hover:scale-[1.02] group-hover:saturate-100" loading="lazy" /> : <div className="flex h-full items-end p-6"><span className="text-8xl font-medium text-border">O.</span></div>}
+                    {member.image ? <img src={member.image} alt={`${member.name}, ${member.role}`} className="h-full w-full object-cover object-center saturate-0 transition duration-500 group-hover:scale-[1.02] group-hover:saturate-100" loading="lazy" /> : <div className="flex h-full flex-col justify-between p-6"><span className="text-xs uppercase text-muted-foreground">Portrait pending</span><span className="text-8xl font-medium text-border">O.</span></div>}
                   </div>
                   <div className="flex justify-between border-t border-border pt-4"><div><h3 className="text-lg font-medium">{member.name}</h3><p className="mt-1 text-xs uppercase text-muted-foreground">{member.role}</p></div><span className="text-xs text-muted-foreground">{String(index + 1).padStart(2, "0")}</span></div>
                   <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">“{member.description}”</p>
@@ -113,12 +102,7 @@ export default function StudioHome() {
         </section>
       </main>
 
-      <footer className="border-t border-border py-8">
-        <div className="studio-shell flex flex-col gap-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 Deadly’s Studio. All rights reserved.</p>
-          <Link to="/admin" className="transition-colors hover:text-foreground">Staff access</Link>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

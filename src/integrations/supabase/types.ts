@@ -55,6 +55,69 @@ export type Database = {
           },
         ]
       }
+      game_review_submissions: {
+        Row: {
+          contact_email: string
+          context: string | null
+          created_at: string
+          game_stage: string
+          game_url: string
+          id: string
+          primary_goal: string
+          studio_name: string
+        }
+        Insert: {
+          contact_email: string
+          context?: string | null
+          created_at?: string
+          game_stage: string
+          game_url: string
+          id?: string
+          primary_goal: string
+          studio_name: string
+        }
+        Update: {
+          contact_email?: string
+          context?: string | null
+          created_at?: string
+          game_stage?: string
+          game_url?: string
+          id?: string
+          primary_goal?: string
+          studio_name?: string
+        }
+        Relationships: []
+      }
+      job_applications: {
+        Row: {
+          applicant_name: string
+          contact_email: string
+          created_at: string
+          id: string
+          note: string
+          profile_url: string
+          role_slug: string
+        }
+        Insert: {
+          applicant_name: string
+          contact_email: string
+          created_at?: string
+          id?: string
+          note: string
+          profile_url: string
+          role_slug: string
+        }
+        Update: {
+          applicant_name?: string
+          contact_email?: string
+          created_at?: string
+          id?: string
+          note?: string
+          profile_url?: string
+          role_slug?: string
+        }
+        Relationships: []
+      }
       task_dependencies: {
         Row: {
           created_at: string

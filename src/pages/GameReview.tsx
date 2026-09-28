@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PublicFooter, PublicHeader } from "@/components/PublicChrome";
 import { supabase } from "@/integrations/supabase/client";
 import { firstIssue, reviewSchema } from "@/lib/publicForms";
+import Script from "next/script"; // 1. Import the Script component (or see alternative if using Vite below)
 
 const inputs = "h-12 rounded-none border-border bg-card px-4 focus-visible:ring-1 focus-visible:ring-foreground focus-visible:ring-offset-0";
 
@@ -31,6 +32,13 @@ export default function GameReview() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* 2. Google AdSense script placed safely inside your template */}
+      <Script 
+        src="https://googlesyndication.com"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
+
       <PublicHeader />
       <main>
         <section className="studio-shell grid min-h-[78vh] gap-12 pb-20 pt-32 lg:grid-cols-[1fr_0.8fr] lg:items-end lg:pb-28">

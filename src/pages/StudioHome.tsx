@@ -3,7 +3,6 @@ import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PublicFooter, PublicHeader } from "@/components/PublicChrome";
 import { readProjects, team, type PortfolioProject } from "@/data/portfolio";
-import Script from "next/script"; // 1. Import Next.js Script wrapper
 
 const metrics = [
   ["50+", "Games Scaled"],
@@ -22,13 +21,6 @@ export default function StudioHome() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* 2. Google AdSense script component */}
-      <Script 
-        src="https://googlesyndication.com"
-        crossOrigin="anonymous"
-        strategy="afterInteractive"
-      />
-
       <PublicHeader />
 
       <main>

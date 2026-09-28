@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PublicFooter, PublicHeader } from "@/components/PublicChrome";
 import { supabase } from "@/integrations/supabase/client";
 import { applicationSchema, firstIssue } from "@/lib/publicForms";
+import Script from "next/script"; // 1. Import Next.js Script wrapper
 
 const roles = [
   { slug: "acquisition-executive", title: "Acquisition Executive", team: "Growth & Partnerships", location: "Remote", summary: "Source and evaluate promising Roblox experiences, build founder relationships, and move qualified opportunities through a clear acquisition pipeline.", traits: ["Roblox market fluency", "Commercial judgment", "Clear founder communication"] },
@@ -47,6 +48,13 @@ export default function Jobs() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* 2. Google AdSense script integration */}
+      <Script 
+        src="https://googlesyndication.com"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
+
       <PublicHeader />
       <main>
         <section className="studio-shell flex min-h-[72vh] flex-col justify-end pb-16 pt-32 md:pb-24">

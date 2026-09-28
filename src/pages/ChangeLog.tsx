@@ -1,12 +1,20 @@
 import { useChangeLogs } from "@/hooks/useChangeLogs";
 import { Loader2, History } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import Script from "next/script"; // 1. Import Next.js Script component
 
 export default function ChangeLogPage() {
   const { data: logs, isLoading } = useChangeLogs();
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 animate-fade-in">
+      {/* 2. Load the Google AdSense Script */}
+      <Script 
+        src="https://googlesyndication.com"
+        crossOrigin="anonymous"
+        strategy="afterInteractive" 
+      />
+
       <div className="flex items-center gap-2 mb-6">
         <History className="w-5 h-5 text-primary" />
         <h1 className="font-mono font-bold text-lg">Change Log</h1>

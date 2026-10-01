@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PublicFooter, PublicHeader } from "@/components/PublicChrome";
 import { supabase } from "@/integrations/supabase/client";
+import type { TablesInsert } from "@/integrations/supabase/types";
 import { applicationSchema, firstIssue } from "@/lib/publicForms";
-import Script from "next/script"; // 1. Import Next.js Script wrapper
 
 const roles = [
   { slug: "acquisition-executive", title: "Acquisition Executive", team: "Growth & Partnerships", location: "Remote", summary: "Source and evaluate promising Roblox experiences, build founder relationships, and move qualified opportunities through a clear acquisition pipeline.", traits: ["Roblox market fluency", "Commercial judgment", "Clear founder communication"] },
@@ -41,20 +41,13 @@ export default function Jobs() {
     const parsed = applicationSchema.safeParse({ role_slug: selectedRole.slug, applicant_name: form.get("applicant_name"), contact_email: form.get("contact_email"), profile_url: form.get("profile_url"), note: form.get("note") });
     if (!parsed.success) { setError(firstIssue(parsed.error)); return; }
     setStatus("sending");
-    const { error: requestError } = await supabase.from("job_applications").insert(parsed.data);
+    const { error: requestError } = await supabase.from("job_applications").insert(parsed.data as TablesInsert<"job_applications">);
     if (requestError) { setError("We couldn’t send your application. Please try again."); setStatus("idle"); return; }
     setStatus("sent");
   }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* 2. Google AdSense script integration */}
-      <Script 
-        src="https://googlesyndication.com"
-        crossOrigin="anonymous"
-        strategy="afterInteractive"
-      />
-
       <PublicHeader />
       <main>
         <section className="studio-shell flex min-h-[72vh] flex-col justify-end pb-16 pt-32 md:pb-24">

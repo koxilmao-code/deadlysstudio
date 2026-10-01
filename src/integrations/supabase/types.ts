@@ -14,6 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
+      ab_tests: {
+        Row: {
+          asset_type: Database["public"]["Enums"]["ab_asset"]
+          clicks_a: number
+          clicks_b: number
+          created_at: string
+          engaged_a: number
+          engaged_b: number
+          game_id: string
+          id: string
+          impressions_a: number
+          impressions_b: number
+          name: string
+          status: string
+          test_number: number
+          updated_at: string
+          user_id: string
+          variant_a: string
+          variant_b: string
+        }
+        Insert: {
+          asset_type?: Database["public"]["Enums"]["ab_asset"]
+          clicks_a?: number
+          clicks_b?: number
+          created_at?: string
+          engaged_a?: number
+          engaged_b?: number
+          game_id: string
+          id?: string
+          impressions_a?: number
+          impressions_b?: number
+          name: string
+          status?: string
+          test_number?: never
+          updated_at?: string
+          user_id: string
+          variant_a: string
+          variant_b: string
+        }
+        Update: {
+          asset_type?: Database["public"]["Enums"]["ab_asset"]
+          clicks_a?: number
+          clicks_b?: number
+          created_at?: string
+          engaged_a?: number
+          engaged_b?: number
+          game_id?: string
+          id?: string
+          impressions_a?: number
+          impressions_b?: number
+          name?: string
+          status?: string
+          test_number?: never
+          updated_at?: string
+          user_id?: string
+          variant_a?: string
+          variant_b?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ab_tests_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       change_logs: {
         Row: {
           action: string
@@ -55,6 +123,180 @@ export type Database = {
           },
         ]
       }
+      creative_request_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          id: string
+          message: string | null
+          request_id: string
+          status: Database["public"]["Enums"]["creative_status"] | null
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          request_id: string
+          status?: Database["public"]["Enums"]["creative_status"] | null
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          request_id?: string
+          status?: Database["public"]["Enums"]["creative_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creative_request_events_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "creative_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creative_requests: {
+        Row: {
+          assigned_to: string | null
+          brief: Json
+          created_at: string
+          deliverable_url: string | null
+          expected_delivery: string | null
+          game_id: string
+          id: string
+          kind: Database["public"]["Enums"]["creative_kind"]
+          preferred_date: string | null
+          request_number: number
+          revision_note: string | null
+          staff_message: string | null
+          status: Database["public"]["Enums"]["creative_status"]
+          tier_at_submit: Database["public"]["Enums"]["plan_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          brief?: Json
+          created_at?: string
+          deliverable_url?: string | null
+          expected_delivery?: string | null
+          game_id: string
+          id?: string
+          kind: Database["public"]["Enums"]["creative_kind"]
+          preferred_date?: string | null
+          request_number?: number
+          revision_note?: string | null
+          staff_message?: string | null
+          status?: Database["public"]["Enums"]["creative_status"]
+          tier_at_submit: Database["public"]["Enums"]["plan_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          brief?: Json
+          created_at?: string
+          deliverable_url?: string | null
+          expected_delivery?: string | null
+          game_id?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["creative_kind"]
+          preferred_date?: string | null
+          request_number?: number
+          revision_note?: string | null
+          staff_message?: string | null
+          status?: Database["public"]["Enums"]["creative_status"]
+          tier_at_submit?: Database["public"]["Enums"]["plan_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creative_requests_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      game_metric_snapshots: {
+        Row: {
+          avg_session_seconds: number | null
+          captured_at: string
+          ccu: number | null
+          d1_retention: number | null
+          d30_retention: number | null
+          d7_retention: number | null
+          dislikes: number | null
+          favorites: number | null
+          game_id: string
+          id: string
+          is_public_metric: boolean
+          likes: number | null
+          new_players: number | null
+          paying_users: number | null
+          purchases: number | null
+          returning_players: number | null
+          revenue: number | null
+          source: string
+          visits: number | null
+        }
+        Insert: {
+          avg_session_seconds?: number | null
+          captured_at?: string
+          ccu?: number | null
+          d1_retention?: number | null
+          d30_retention?: number | null
+          d7_retention?: number | null
+          dislikes?: number | null
+          favorites?: number | null
+          game_id: string
+          id?: string
+          is_public_metric?: boolean
+          likes?: number | null
+          new_players?: number | null
+          paying_users?: number | null
+          purchases?: number | null
+          returning_players?: number | null
+          revenue?: number | null
+          source: string
+          visits?: number | null
+        }
+        Update: {
+          avg_session_seconds?: number | null
+          captured_at?: string
+          ccu?: number | null
+          d1_retention?: number | null
+          d30_retention?: number | null
+          d7_retention?: number | null
+          dislikes?: number | null
+          favorites?: number | null
+          game_id?: string
+          id?: string
+          is_public_metric?: boolean
+          likes?: number | null
+          new_players?: number | null
+          paying_users?: number | null
+          purchases?: number | null
+          returning_players?: number | null
+          revenue?: number | null
+          source?: string
+          visits?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_metric_snapshots_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       game_review_submissions: {
         Row: {
           contact_email: string
@@ -88,6 +330,51 @@ export type Database = {
         }
         Relationships: []
       }
+      games: {
+        Row: {
+          created_at: string
+          creator_id: string
+          description: string | null
+          external_game_id: string
+          genre: string
+          id: string
+          is_public: boolean
+          metadata: Json
+          name: string
+          platform: Database["public"]["Enums"]["game_platform"]
+          thumbnail_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          external_game_id: string
+          genre?: string
+          id?: string
+          is_public?: boolean
+          metadata?: Json
+          name: string
+          platform?: Database["public"]["Enums"]["game_platform"]
+          thumbnail_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          external_game_id?: string
+          genre?: string
+          id?: string
+          is_public?: boolean
+          metadata?: Json
+          name?: string
+          platform?: Database["public"]["Enums"]["game_platform"]
+          thumbnail_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       job_applications: {
         Row: {
           applicant_name: string
@@ -115,6 +402,131 @@ export type Database = {
           note?: string
           profile_url?: string
           role_slug?: string
+        }
+        Relationships: []
+      }
+      marketplace_listings: {
+        Row: {
+          category: string
+          compatibility: Database["public"]["Enums"]["platform_compat"]
+          contact_url: string | null
+          created_at: string
+          description: string
+          game_id: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          price_usd: number
+          seller_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          compatibility?: Database["public"]["Enums"]["platform_compat"]
+          contact_url?: string | null
+          created_at?: string
+          description: string
+          game_id?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          price_usd?: number
+          seller_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          compatibility?: Database["public"]["Enums"]["platform_compat"]
+          contact_url?: string | null
+          created_at?: string
+          description?: string
+          game_id?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          price_usd?: number
+          seller_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_listings_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string
+          id: string
+          is_public: boolean
+          services: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string
+          id: string
+          is_public?: boolean
+          services?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_public?: boolean
+          services?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string
+          current_period_start: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          tier: Database["public"]["Enums"]["plan_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: Database["public"]["Enums"]["plan_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: Database["public"]["Enums"]["plan_tier"]
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -270,19 +682,40 @@ export type Database = {
           created_at: string
           id: string
           role: string | null
+          user_id: string | null
           username: string
         }
         Insert: {
           created_at?: string
           id?: string
           role?: string | null
+          user_id?: string | null
           username: string
         }
         Update: {
           created_at?: string
           id?: string
           role?: string | null
+          user_id?: string | null
           username?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -339,12 +772,135 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_game_metrics: {
+        Row: {
+          captured_at: string | null
+          ccu: number | null
+          dislikes: number | null
+          favorites: number | null
+          game_id: string | null
+          likes: number | null
+          visits: number | null
+        }
+        Insert: {
+          captured_at?: string | null
+          ccu?: number | null
+          dislikes?: number | null
+          favorites?: number | null
+          game_id?: string | null
+          likes?: number | null
+          visits?: number | null
+        }
+        Update: {
+          captured_at?: string | null
+          ccu?: number | null
+          dislikes?: number | null
+          favorites?: number | null
+          game_id?: string | null
+          likes?: number | null
+          visits?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_metric_snapshots_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
-      [_ in never]: never
+      credit_allowance: {
+        Args: {
+          _kind: Database["public"]["Enums"]["creative_kind"]
+          _tier: Database["public"]["Enums"]["plan_tier"]
+        }
+        Returns: number
+      }
+      credit_window_start: { Args: { _uid: string }; Returns: string }
+      effective_tier: {
+        Args: { _uid: string }
+        Returns: Database["public"]["Enums"]["plan_tier"]
+      }
+      get_credit_usage: {
+        Args: never
+        Returns: {
+          allowance: number
+          kind: Database["public"]["Enums"]["creative_kind"]
+          used: number
+          window_start: string
+        }[]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      has_tier: {
+        Args: { _min: Database["public"]["Enums"]["plan_tier"]; _uid: string }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
+      request_creative_revision: {
+        Args: { _note: string; _request_id: string }
+        Returns: undefined
+      }
+      submit_creative_request: {
+        Args: {
+          _brief: Json
+          _game_id: string
+          _kind: Database["public"]["Enums"]["creative_kind"]
+          _preferred_date: string
+        }
+        Returns: {
+          assigned_to: string | null
+          brief: Json
+          created_at: string
+          deliverable_url: string | null
+          expected_delivery: string | null
+          game_id: string
+          id: string
+          kind: Database["public"]["Enums"]["creative_kind"]
+          preferred_date: string | null
+          request_number: number
+          revision_note: string | null
+          staff_message: string | null
+          status: Database["public"]["Enums"]["creative_status"]
+          tier_at_submit: Database["public"]["Enums"]["plan_tier"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "creative_requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      tier_rank: {
+        Args: { _t: Database["public"]["Enums"]["plan_tier"] }
+        Returns: number
+      }
     }
     Enums: {
+      ab_asset: "thumbnail" | "icon" | "title" | "promo" | "trailer"
+      app_role: "admin" | "staff" | "user"
+      creative_kind: "thumbnail" | "trailer"
+      creative_status:
+        | "submitted"
+        | "reviewing"
+        | "in_progress"
+        | "awaiting_info"
+        | "ready_for_review"
+        | "revision_requested"
+        | "completed"
+      game_platform: "roblox" | "uefn"
+      plan_tier: "free" | "starter" | "premium" | "enterprise"
+      platform_compat: "roblox" | "uefn" | "multi"
       task_priority: "low" | "medium" | "high" | "urgent"
       task_status: "open" | "claimed" | "in_progress" | "done"
     }
@@ -474,6 +1030,21 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      ab_asset: ["thumbnail", "icon", "title", "promo", "trailer"],
+      app_role: ["admin", "staff", "user"],
+      creative_kind: ["thumbnail", "trailer"],
+      creative_status: [
+        "submitted",
+        "reviewing",
+        "in_progress",
+        "awaiting_info",
+        "ready_for_review",
+        "revision_requested",
+        "completed",
+      ],
+      game_platform: ["roblox", "uefn"],
+      plan_tier: ["free", "starter", "premium", "enterprise"],
+      platform_compat: ["roblox", "uefn", "multi"],
       task_priority: ["low", "medium", "high", "urgent"],
       task_status: ["open", "claimed", "in_progress", "done"],
     },

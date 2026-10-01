@@ -3,7 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   useTask, useTaskNotes, useTaskDependencies, useUpdateTask,
   useCreateNote, useDeleteNote, useAddDependency, useRemoveDependency,
-  useTasks, type TaskStatus, type TaskNote,
+  useTasks, type TaskStatus, type TaskNote, type TaskPriority,
+  type TaskDifficulty, type RoleCategory,
 } from "@/hooks/useTasks";
 import { type TeamMember } from "@/lib/auth";
 import { Button } from "@/components/ui/button";

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PublicFooter, PublicHeader } from "@/components/PublicChrome";
 import { supabase } from "@/integrations/supabase/client";
+import type { TablesInsert } from "@/integrations/supabase/types";
 import { firstIssue, reviewSchema } from "@/lib/publicForms";
 
 const inputs = "h-12 rounded-none border-border bg-card px-4 focus-visible:ring-1 focus-visible:ring-foreground focus-visible:ring-offset-0";
@@ -24,7 +25,7 @@ export default function GameReview() {
     });
     if (!parsed.success) { setError(firstIssue(parsed.error)); return; }
     setStatus("sending");
-    const { error: requestError } = await supabase.from("game_review_submissions").insert(parsed.data);
+    const { error: requestError } = await supabase.from("game_review_submissions").insert(parsed.data as TablesInsert<"game_review_submissions">);
     if (requestError) { setError("We couldn’t send your request. Please try again."); setStatus("idle"); return; }
     setStatus("sent");
   }

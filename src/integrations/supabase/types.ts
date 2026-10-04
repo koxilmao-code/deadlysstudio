@@ -494,6 +494,95 @@ export type Database = {
         }
         Relationships: []
       }
+      rbx_snapshots: {
+        Row: {
+          captured_at: string
+          down_votes: number
+          favorites: number
+          id: number
+          playing: number
+          universe_id: number
+          up_votes: number
+          visits: number
+        }
+        Insert: {
+          captured_at?: string
+          down_votes?: number
+          favorites?: number
+          id?: number
+          playing?: number
+          universe_id: number
+          up_votes?: number
+          visits?: number
+        }
+        Update: {
+          captured_at?: string
+          down_votes?: number
+          favorites?: number
+          id?: number
+          playing?: number
+          universe_id?: number
+          up_votes?: number
+          visits?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rbx_snapshots_universe_id_fkey"
+            columns: ["universe_id"]
+            isOneToOne: false
+            referencedRelation: "rbx_universes"
+            referencedColumns: ["universe_id"]
+          },
+        ]
+      }
+      rbx_universes: {
+        Row: {
+          created_at_rbx: string | null
+          creator_name: string | null
+          first_seen: string
+          genre: string | null
+          icon_url: string | null
+          last_polled: string
+          max_players: number | null
+          name: string
+          price: number | null
+          root_place_id: number | null
+          thumb_url: string | null
+          universe_id: number
+          updated_at_rbx: string | null
+        }
+        Insert: {
+          created_at_rbx?: string | null
+          creator_name?: string | null
+          first_seen?: string
+          genre?: string | null
+          icon_url?: string | null
+          last_polled?: string
+          max_players?: number | null
+          name: string
+          price?: number | null
+          root_place_id?: number | null
+          thumb_url?: string | null
+          universe_id: number
+          updated_at_rbx?: string | null
+        }
+        Update: {
+          created_at_rbx?: string | null
+          creator_name?: string | null
+          first_seen?: string
+          genre?: string | null
+          icon_url?: string | null
+          last_polled?: string
+          max_players?: number | null
+          name?: string
+          price?: number | null
+          root_place_id?: number | null
+          thumb_url?: string | null
+          universe_id?: number
+          updated_at_rbx?: string | null
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           created_at: string

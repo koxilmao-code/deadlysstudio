@@ -7,8 +7,8 @@ Deno.serve(async (req) => {
   try {
     const user = await requireUser(req);
     const db = admin();
-    const { data: current } = await db.from("subscriptions").select("tier").eq("user_id", user.id).maybeSingle();
-    if (current?.tier === "enterprise") return json({ tier: "enterprise" });
+    const { data: current } = await db.from("subscriptions").select("tier,stripe_subscription_id").eq("user_id", user.id).maybeSingle();
+    if (current?.tier === "enterprise" && !current.stripe_subscription_id) return json({ tier: "enterprise" });
 
     const s = stripe();
     const customer = await findCustomer(s, user.email!);

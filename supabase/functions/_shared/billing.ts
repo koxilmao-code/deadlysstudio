@@ -8,10 +8,15 @@ export const cors = {
 };
 
 export const PLAN_PRICES: Record<string, string> = {
-  starter: "price_1ULusYPi82s3aVAlaFgEkC8G",
-  premium: "price_1ULuscPi82s3aVAlcAnk7n9h",
+  starter: "price_1UMdD7Pi82s3aVAl5imFyhJ0",
+  premium: "price_1UMdD8Pi82s3aVAliJCMIYLc",
+  scale: "price_1UMdD9Pi82s3aVAlIX5Nm8kO",
 };
-export const PRODUCT_TIERS: Record<string, "starter" | "premium"> = {
+// "scale" is stored as the enterprise tier in the database.
+export const PRODUCT_TIERS: Record<string, "starter" | "premium" | "enterprise"> = {
+  prod_VNNzyJD1nTjGgY: "starter",
+  prod_VNNzjmDDGPqwfZ: "premium",
+  prod_VNNzLFRhIbq1KD: "enterprise",
   prod_VMeAO5U7ZKcxO0: "starter",
   prod_VMeA2iPrDdOn6s: "premium",
 };

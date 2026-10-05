@@ -41,7 +41,7 @@ export default function StudioHome() {
       <PublicHeader />
 
       <main>
-        <section className="studio-shell flex min-h-[92vh] flex-col justify-end pb-10 pt-32 md:pb-16">
+        <section className="studio-shell flex flex-col justify-end pb-10 pt-40 md:pb-16">
           <p className="mb-8 text-xs uppercase text-muted-foreground">Roblox analytics · Human-made thumbnails & trailers</p>
           <h1 className="max-w-6xl text-[clamp(3rem,9vw,8.5rem)] font-semibold leading-[0.88]">
             Know your numbers.<br /><span className="text-muted-foreground">Outrun the front page.</span>

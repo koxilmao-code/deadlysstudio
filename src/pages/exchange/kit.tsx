@@ -60,7 +60,7 @@ export function SignInPrompt({ next }: { next: string }) {
   );
 }
 
-const TIER_NAME: Record<Tier, string> = { guest: "Guest", free: "Free", starter: "Starter", premium: "Premium", enterprise: "Enterprise" };
+const TIER_NAME: Record<Tier, string> = { guest: "Guest", free: "Free", starter: "Starter", premium: "Premium", enterprise: "Scale" };
 export const tierName = (t: Tier) => TIER_NAME[t];
 
 /** UI hint only — every gated action is enforced again by the database. */

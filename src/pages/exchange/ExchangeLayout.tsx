@@ -16,7 +16,7 @@ export default function ExchangeLayout() {
       <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
         <div className="flex h-14 items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-4">
-            <Link to="/" className="text-sm font-semibold uppercase">Deadly’s Studio</Link>
+            <Link to="/" className="text-sm font-semibold uppercase">Outrun Services</Link>
             <span className="hidden border-l border-border pl-4 text-xs text-muted-foreground sm:block">Creator Exchange</span>
           </div>
           <div className="flex items-center gap-3 text-xs">

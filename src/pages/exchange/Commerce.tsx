@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Gate, GamePicker, NoGames, PageHead, Panel, SignInPrompt, Stat, tierName, useMyGames, type Game } from "./kit";
 import { useCredits } from "./Overview";
+import { openBilling, PlanGrid } from "@/components/PlanGrid";
 
 const errMsg = (e: unknown) => (e instanceof Error ? e.message : String(e));
 const httpUrl = z.string().trim().url().max(500).refine((u) => /^https:\/\//.test(u), "Must start with https://");
@@ -173,7 +174,7 @@ export function CreativeStudio() {
 
   return (
     <>
-      <PageHead index="05 / Creative Studio" title="Creative Studio" desc="Human-made thumbnails and trailers from the Deadly's Studio creative team." />
+      <PageHead index="05 / Creative Studio" title="Creative Studio" desc="Human-made thumbnails and trailers from the Outrun creative team." />
       <Gate min="starter" next="/exchange/creative">
         <div className="mb-6 grid grid-cols-2 border border-border bg-card">
           {credits.data?.map((x) => <Stat key={x.kind} label={`${x.kind} credits`} value={`${Math.max(x.allowance - x.used, 0)} / ${x.allowance}`} hint={`remaining · resets each billing cycle`} />)}
@@ -330,60 +331,24 @@ export function ABTesting() {
 }
 
 /* ---------------- Subscription ---------------- */
-const PLANS: { id: Tier; price: string; features: string[] }[] = [
-  { id: "free", price: "$0", features: ["Basic engagement stats", "Post games for sale", "Creator profile", "Basic game management"] },
-  { id: "starter", price: "$5/mo", features: ["Full Trending feed", "Player engagement & advanced analytics", "Revenue analytics", "2 human-made thumbnails / month", "A/B testing", "Competitor insights"] },
-  { id: "premium", price: "$35/mo", features: ["Everything in Starter", "4 human-made thumbnails / month", "Expanded analytics & insights", "Detailed revenue analytics"] },
-  { id: "enterprise", price: "Custom", features: ["Everything in Premium", "Full game development support", "8 thumbnails / month", "2 human-made trailers / month", "Custom reporting & dedicated support"] },
-];
-
 export function Subscription() {
   const { session, tier, periodEnd, refreshPlan } = useSession();
   const [params] = useSearchParams();
-  const [busy, setBusy] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
   useEffect(() => {
     if (params.get("checkout") === "success") { toast.success("Payment received — updating your plan"); refreshPlan(true); }
   }, [params, refreshPlan]);
-  const go = async (fn: "create-checkout" | "customer-portal", plan?: string) => {
-    setBusy(plan ?? fn);
-    try {
-      const { data, error } = await supabase.functions.invoke(fn, { body: plan ? { plan } : {} });
-      if (error) {
-        const ctx = (error as any).context;
-        throw new Error(ctx?.json ? (await ctx.json()).error : error.message);
-      }
-      if (data?.error) throw new Error(data.error);
-      window.open(data.url, "_blank", "noopener");
-    } catch (e) { toast.error(errMsg(e)); } finally { setBusy(null); }
-  };
+  const portal = async () => { setBusy(true); try { await openBilling("customer-portal"); } catch (e) { toast.error(errMsg(e)); } finally { setBusy(false); } };
   return (
     <>
       <PageHead index="10 / Subscription" title="Subscription" desc={session ? `Current plan: ${tierName(tier)}${periodEnd && tier !== "free" ? ` · renews ${new Date(periodEnd).toLocaleDateString()}` : ""}` : "Choose a plan."}>
         {session && <div className="flex gap-2">
           <Button variant="outline" size="sm" className="rounded-none" onClick={() => refreshPlan(true)}>Refresh status</Button>
-          {tier !== "free" && tier !== "enterprise" && <Button size="sm" className="rounded-none" disabled={!!busy} onClick={() => go("customer-portal")}>Manage billing</Button>}
+          {tier !== "free" && <Button size="sm" className="rounded-none" disabled={busy} onClick={portal}>Manage billing</Button>}
         </div>}
       </PageHead>
-      <div className="grid gap-px border border-border bg-border md:grid-cols-2 xl:grid-cols-4">
-        {PLANS.map((p) => {
-          const current = session && tier === p.id;
-          return (
-            <div key={p.id} className={`flex flex-col bg-card p-5 ${current ? "outline outline-1 outline-foreground" : ""}`}>
-              <p className="text-xs uppercase tracking-wider text-muted-foreground">{tierName(p.id)}{current && " · Your plan"}</p>
-              <p className="mt-2 font-mono text-2xl">{p.price}</p>
-              <ul className="mt-4 flex-1 space-y-1.5 text-sm text-muted-foreground">{p.features.map((x) => <li key={x}>— {x}</li>)}</ul>
-              <div className="mt-6">
-                {!session ? <Button asChild className="w-full rounded-none" variant="outline"><Link to="/auth?next=/exchange/subscription">Sign in</Link></Button>
-                  : current ? <Button disabled className="w-full rounded-none" variant="outline">Current plan</Button>
-                  : p.id === "enterprise" ? <Button asChild className="w-full rounded-none" variant="outline"><a href="mailto:hello@deadlystudio.dev?subject=Enterprise%20plan">Contact sales</a></Button>
-                  : p.id === "free" ? (tier !== "enterprise" ? <Button className="w-full rounded-none" variant="outline" disabled={!!busy} onClick={() => go("customer-portal")}>Downgrade via billing</Button> : null)
-                  : <Button className="w-full rounded-none" disabled={!!busy} onClick={() => go("create-checkout", p.id)}>{busy === p.id ? "Opening…" : atLeast(tier, p.id) ? "Switch" : "Upgrade"}</Button>}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      <p className="mt-4 text-xs text-muted-foreground">Guests (no account) can browse the marketplace, public games and creator profiles. Payments are processed securely by Stripe.</p>
+      <PlanGrid next="/exchange/subscription" />
+      <p className="mt-4 text-xs text-muted-foreground">Payments are processed securely by Stripe. To downgrade or cancel, use Manage billing.</p>
     </>
   );
 }

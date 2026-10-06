@@ -8,6 +8,8 @@ const cors = {
 const out = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...cors, "Content-Type": "application/json" } });
 const db = () => createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
 const MIN_GAP_MS = 4 * 60 * 1000;
+/** Ranges restricted to Starter and above; enforced against the caller's Stripe-backed tier. */
+const GATED_RANGES = new Set(["90d", "1y"]);
 
 const Body = z.discriminatedUnion("action", [
   z.object({ action: z.literal("search"), q: z.string().trim().min(1).max(200) }),
@@ -93,6 +95,16 @@ Deno.serve(async (req) => {
       return out({ polled: ids.length, since });
     }
 
+    if (GATED_RANGES.has(b.range)) {
+      const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, { auth: { persistSession: false } });
+      const { data: { user } } = await anon.auth.getUser(req.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") ?? "");
+      if (!user) return out({ error: "90d and 1y ranges are included with the Starter plan — sign in to continue." }, 401);
+      const { data: sub } = await c.from("subscriptions").select("tier").eq("user_id", user.id).maybeSingle();
+      const tier = sub?.tier ?? "free";
+      if (tier !== "starter" && tier !== "premium" && tier !== "enterprise") {
+        return out({ error: "90d and 1y ranges are included with the Starter plan ($15/mo) and above." }, 403);
+      }
+    }
     const [live] = await fetchLive([b.id]);
     if (!live) return out({ error: "Game not found" }, 404);
     const { data: last } = await c.from("rbx_snapshots").select("captured_at").eq("universe_id", b.id).order("captured_at", { ascending: false }).limit(1).maybeSingle();

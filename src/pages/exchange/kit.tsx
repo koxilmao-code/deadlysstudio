@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { atLeast, useSession, type Tier } from "@/hooks/useSession";
 import { Button } from "@/components/ui/button";
+import { fetchReport, searchGames, type Range as RbxRange } from "@/lib/rbx";
 
 export type Game = {
   id: string; creator_id: string; platform: "roblox" | "uefn"; external_game_id: string; name: string;
@@ -46,7 +47,7 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
 export function Unavailable({ what = "This metric" }: { what?: string }) {
   return (
     <div className="border border-dashed border-border p-6 text-sm text-muted-foreground">
-      {what} is not available yet. No data source is connected for this game, so nothing is shown rather than estimated.
+      {what} has no readings yet. Outrun records a new reading every 10 minutes from the first lookup, so check back shortly.
     </div>
   );
 }
@@ -89,14 +90,29 @@ export function useMyGames() {
   });
 }
 
-export function useSnapshots(gameId: string | undefined, sinceIso: string) {
+const pickRange = (sinceIso: string): RbxRange => {
+  const d = (Date.now() - new Date(sinceIso).getTime()) / 864e5;
+  return d <= 1.01 ? "24h" : d <= 7.01 ? "7d" : d <= 30.01 ? "30d" : d <= 90.01 ? "90d" : "1y";
+};
+
+// Owner-connected metrics first; Roblox games fall back to Outrun's public tracking history.
+export function useSnapshots(game: Game | undefined, sinceIso: string) {
   return useQuery({
-    queryKey: ["snaps", gameId, sinceIso],
-    enabled: !!gameId,
-    queryFn: async () => {
-      const { data, error } = await supabase.from("game_metric_snapshots").select("*").eq("game_id", gameId!).gte("captured_at", sinceIso).order("captured_at");
+    queryKey: ["snaps", game?.id, game?.external_game_id, sinceIso],
+    enabled: !!game,
+    queryFn: async (): Promise<Snapshot[]> => {
+      const { data, error } = await supabase.from("game_metric_snapshots").select("*").eq("game_id", game!.id).gte("captured_at", sinceIso).order("captured_at");
       if (error) throw error;
-      return data as Snapshot[];
+      if (data?.length || game!.platform !== "roblox") return data as Snapshot[];
+      try {
+        const hit = (await searchGames(game!.external_game_id))[0];
+        if (!hit) return [];
+        const r = await fetchReport(hit.universeId, pickRange(sinceIso));
+        const pts = r.history.filter((p) => p.captured_at >= sinceIso);
+        const g = r.game;
+        if (!pts.length && g) pts.push({ captured_at: new Date().toISOString(), playing: g.playing, visits: g.visits, favorites: g.favorites, up_votes: g.up_votes, down_votes: g.down_votes });
+        return pts.map((p) => ({ captured_at: p.captured_at, ccu: p.playing, visits: p.visits, favorites: p.favorites, likes: p.up_votes, dislikes: p.down_votes }));
+      } catch { return []; }
     },
   });
 }

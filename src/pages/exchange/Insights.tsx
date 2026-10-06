@@ -62,7 +62,8 @@ export function AnalyticsView({ mode }: { mode: "analytics" | "revenue" | "perfo
   const [gid, setGid] = useState<string>();
   const { since, ui } = useRange();
   const id = gid ?? games.data?.[0]?.id;
-  const snaps = useSnapshots(id, since).data ?? [];
+  const snapsQ = useSnapshots(games.data?.find((g) => g.id === id), since);
+  const snaps = snapsQ.data ?? [];
   const meta = {
     analytics: ["02 / Game Analytics", "Game Analytics", "free"],
     revenue: ["07 / Revenue", "Revenue Analytics", "starter"],
@@ -77,7 +78,7 @@ export function AnalyticsView({ mode }: { mode: "analytics" | "revenue" | "perfo
         <div className="flex flex-wrap gap-2">{games.data?.length ? <GamePicker games={games.data} value={id} onChange={setGid} /> : null}{ui}</div>
       </PageHead>
       <Gate min={min} next={`/exchange/${mode}`}>
-        {!games.data?.length ? <NoGames /> : !snaps.length ? <Unavailable what="Data for this game in this period" /> : (
+        {!games.data?.length ? <NoGames /> : snapsQ.isLoading ? <div className="h-64 animate-pulse bg-card" /> : !snaps.length ? <Unavailable what="Data for this game in this period" /> : (
           <div className="space-y-6">
             {mode === "analytics" && (<>
               <div className="grid grid-cols-2 border border-border bg-card md:grid-cols-5">

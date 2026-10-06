@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Area, AreaChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { ArrowUpRight, Lock } from "lucide-react";
@@ -86,6 +86,8 @@ const Cell = ({ label, value, hint }: { label: string; value: ReactNode; hint?: 
 const pct = (n: number | null) => (n == null ? "—" : `${n > 0 ? "+" : ""}${n.toFixed(1)}%`);
 
 export default function GameStats() {
+  const nav = useNavigate();
+  const { session, tier } = useSession();
   const id = Number(useParams().id);
   const [range, setRange] = useState<Range>("7d");
   const valid = Number.isInteger(id) && id > 0;
@@ -132,10 +134,18 @@ export default function GameStats() {
             <div className="mt-10 flex items-center justify-between border-b border-border pb-3">
               <h2 className="text-xl font-medium">Player counts</h2>
               <div className="flex gap-px border border-border bg-border" role="tablist">
-                {RANGES.map((r) => (
-                  <button key={r} role="tab" aria-selected={range === r} onClick={() => setRange(r)}
-                    className={`px-3 py-1.5 font-mono text-xs uppercase ${range === r ? "bg-foreground text-background" : "bg-card text-muted-foreground hover:text-foreground"}`}>{r}</button>
-                ))}
+                {RANGES.map((r) => {
+                  const locked = (r === "90d" || r === "1y") && !atLeast(tier, "starter");
+                  return (
+                    <button key={r} role="tab" aria-selected={range === r}
+                      onClick={() => locked
+                        ? nav(session ? "/pricing" : `/auth?next=${encodeURIComponent(location.pathname)}`)
+                        : setRange(r)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 font-mono text-xs uppercase ${range === r ? "bg-foreground text-background" : locked ? "bg-card text-muted-foreground/50" : "bg-card text-muted-foreground hover:text-foreground"}`}>
+                      {r}{locked && <Lock className="h-3 w-3" />}
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div className="mt-4"><Chart title="Concurrent players (CCU)" data={h} k="playing" range={range} area value={`${g.playing.toLocaleString()} now`} /></div>

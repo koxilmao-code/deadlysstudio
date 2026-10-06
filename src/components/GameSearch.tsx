@@ -42,7 +42,7 @@ export function GameSearch({ large = false, autoFocus = false }: { large?: boole
           {err && !hits.length && <li className="px-4 py-3 text-sm text-muted-foreground">{err}</li>}
           {hits.map((h) => (
             <li key={h.universeId}>
-              <button type="button" onClick={() => go(h)} className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-secondary">
+              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => go(h)} className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-secondary">
                 {h.icon ? <img src={h.icon} alt="" className="h-9 w-9 shrink-0 bg-muted" loading="lazy" /> : <span className="h-9 w-9 shrink-0 bg-muted" />}
                 <span className="min-w-0 flex-1"><span className="block truncate text-sm">{h.name}</span>{h.creator && <span className="block truncate text-xs text-muted-foreground">by {h.creator}</span>}</span>
                 <span className="shrink-0 font-mono text-xs text-neon">{compact(h.playing)} live</span>

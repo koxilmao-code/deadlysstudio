@@ -375,6 +375,24 @@ export type Database = {
         }
         Relationships: []
       }
+      internal_job_keys: {
+        Row: {
+          created_at: string
+          name: string
+          secret: string
+        }
+        Insert: {
+          created_at?: string
+          name: string
+          secret?: string
+        }
+        Update: {
+          created_at?: string
+          name?: string
+          secret?: string
+        }
+        Relationships: []
+      }
       job_applications: {
         Row: {
           applicant_name: string

@@ -15,6 +15,13 @@
       "when": 1793597508301,
       "tag": "0001_lock_rbx_tables_to_server",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793646811185,
+      "tag": "0002_lock_poll_and_form_inserts",
+      "breakpoints": true
     }
   ]
 }

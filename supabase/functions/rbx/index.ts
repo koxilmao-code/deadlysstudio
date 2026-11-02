@@ -86,6 +86,10 @@ Deno.serve(async (req) => {
 
     const c = db();
     if (b.action === "poll") {
+      // Only the scheduled job knows this key; everyone else is refused.
+      const given = req.headers.get("x-job-key") ?? "";
+      const { data: key } = await c.from("internal_job_keys").select("secret").eq("name", "rbx-poll").maybeSingle();
+      if (!key?.secret || given.length !== key.secret.length || given !== key.secret) return out({ error: "Forbidden" }, 403);
       const since = new Date(Date.now() - 14 * 864e5).toISOString();
       const { data } = await c.from("rbx_universes").select("universe_id").gte("first_seen", "1970-01-01").order("last_polled").limit(500);
       const ids = (data ?? []).map((r) => r.universe_id);

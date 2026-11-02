@@ -8,6 +8,13 @@
       "when": 1791073428891,
       "tag": "0000_roblox_tracking",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793597508301,
+      "tag": "0001_lock_rbx_tables_to_server",
+      "breakpoints": true
     }
   ]
 }

@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { z } from "npm:zod@3.23.8";
+import { meetsTier } from "../_shared/access.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -99,9 +100,8 @@ Deno.serve(async (req) => {
       const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, { auth: { persistSession: false } });
       const { data: { user } } = await anon.auth.getUser(req.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") ?? "");
       if (!user) return out({ error: "90d and 1y ranges are included with the Starter plan — sign in to continue." }, 401);
-      const { data: sub } = await c.from("subscriptions").select("tier").eq("user_id", user.id).maybeSingle();
-      const tier = sub?.tier ?? "free";
-      if (tier !== "starter" && tier !== "premium" && tier !== "enterprise") {
+      const { data: sub } = await c.from("subscriptions").select("tier,status,current_period_end,stripe_subscription_id").eq("user_id", user.id).maybeSingle();
+      if (!meetsTier(sub, "starter")) {
         return out({ error: "90d and 1y ranges are included with the Starter plan ($15/mo) and above." }, 403);
       }
     }

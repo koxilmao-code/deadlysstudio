@@ -1,4 +1,5 @@
 import { cors, json, PLAN_PRICES, requireUser, stripe, findCustomer } from "../_shared/billing.ts";
+import { returnOrigin } from "../_shared/access.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
@@ -9,7 +10,7 @@ Deno.serve(async (req) => {
     if (!price) return json({ error: "Unknown plan" }, 400);
     const s = stripe();
     const customer = await findCustomer(s, user.email!);
-    const origin = req.headers.get("origin") ?? "https://outrunservice.lovable.app";
+    const origin = returnOrigin(req.headers.get("origin"));
     const session = await s.checkout.sessions.create({
       customer: customer ?? undefined,
       customer_email: customer ? undefined : user.email,

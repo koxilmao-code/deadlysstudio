@@ -16,7 +16,9 @@ import Overview from "./pages/exchange/Overview";
 import { AnalyticsView, Competitors, Trending } from "./pages/exchange/Insights";
 import { ABTesting, CreativeStudio, CreatorProfile, Marketplace, Subscription } from "./pages/exchange/Commerce";
 import NotFound from "./pages/NotFound";
+import { lazy, Suspense } from "react";
 
+const IconStudio = lazy(() => import("./pages/exchange/IconStudio"));
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -42,6 +44,7 @@ const App = () => (
               <Route path="competitors" element={<Competitors />} />
               <Route path="marketplace" element={<Marketplace />} />
               <Route path="creative" element={<CreativeStudio />} />
+              <Route path="creative/icon-studio" element={<Suspense fallback={null}><IconStudio /></Suspense>} />
               <Route path="ab-tests" element={<ABTesting />} />
               <Route path="subscription" element={<Subscription />} />
               <Route path="creator/:id" element={<CreatorProfile />} />

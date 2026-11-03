@@ -175,6 +175,13 @@ export function CreativeStudio() {
   return (
     <>
       <PageHead index="05 / Creative Studio" title="Creative Studio" desc="Human-made thumbnails and trailers from the Outrun creative team." />
+      <Link to="/exchange/creative/icon-studio" className="mb-6 flex items-center justify-between gap-4 border border-border bg-card p-4 transition-colors hover:border-foreground">
+        <div>
+          <p className="text-sm font-semibold">Icon Update Studio <span className="ml-2 border border-border px-1.5 py-0.5 font-mono text-[10px] uppercase text-muted-foreground">Starter+</span></p>
+          <p className="mt-1 text-xs text-muted-foreground">Add hourglass and countdown overlays to your game icon yourself, then export PNG, JPEG or WEBP.</p>
+        </div>
+        <span className="whitespace-nowrap text-xs">Open →</span>
+      </Link>
       <Gate min="starter" next="/exchange/creative">
         <div className="mb-6 grid grid-cols-2 border border-border bg-card">
           {credits.data?.map((x) => <Stat key={x.kind} label={`${x.kind} credits`} value={`${Math.max(x.allowance - x.used, 0)} / ${x.allowance}`} hint={`remaining · resets each billing cycle`} />)}

@@ -5,7 +5,7 @@ import { tierName } from "./kit";
 
 const NAV = [
   ["", "Overview"], ["analytics", "Game Analytics"], ["trending", "Trending"], ["marketplace", "Marketplace"],
-  ["creative", "Creative Studio"], ["ab-tests", "A/B Testing"], ["revenue", "Revenue Analytics"],
+  ["creative", "Creative Studio"], ["creative/icon-studio", "Icon Update Studio"], ["ab-tests", "A/B Testing"], ["revenue", "Revenue Analytics"],
   ["performance", "Game Performance"], ["competitors", "Competitor Insights"], ["subscription", "Subscription"],
 ] as const;
 
@@ -33,7 +33,7 @@ export default function ExchangeLayout() {
       <div className="grid lg:grid-cols-[13rem_1fr]">
         <nav aria-label="Exchange" className="flex gap-1 overflow-x-auto border-b border-border p-2 lg:min-h-[calc(100vh-3.5rem)] lg:flex-col lg:border-b-0 lg:border-r lg:p-3">
           {NAV.map(([to, label]) => (
-            <NavLink key={to} to={`/exchange${to ? "/" + to : ""}`} end={!to}
+            <NavLink key={to} to={`/exchange${to ? "/" + to : ""}`} end
               className={({ isActive }) => `whitespace-nowrap px-3 py-2 text-xs transition-colors ${isActive ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
               {label}
             </NavLink>

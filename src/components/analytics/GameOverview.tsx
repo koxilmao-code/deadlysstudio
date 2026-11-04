@@ -77,7 +77,7 @@ export function GameOverview({ report, range, rangeControl }: { report: GameRepo
     return {
       ps, last, prev,
       line: h.map((p) => ({ t: p.captured_at, v: p.playing })),
-      change: changeSince(h, range === "24h" ? DAY : Math.min(DAY * 7, DAY * 365), Date.now()),
+      change: changeSince(h, range === "24h" ? DAY : 7 * DAY),
       growth: pctChange(prev?.avg, last && !last.partial ? last.avg : null),
       avgBars: toBars((p) => Math.round(p.avg)),
       peakBars: toBars((p) => p.peak),

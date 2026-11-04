@@ -22,6 +22,13 @@
       "when": 1793646811185,
       "tag": "0002_lock_poll_and_form_inserts",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793770814241,
+      "tag": "0003_rbx_pulse",
+      "breakpoints": true
     }
   ]
 }

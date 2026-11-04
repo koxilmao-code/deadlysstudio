@@ -72,7 +72,7 @@ function Locked({ min, children }: { min: Tier; children: ReactNode }) {
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-background/60 p-4 text-center">
         <Lock className="h-4 w-4" />
         <p className="text-sm">{session ? `Unlock with ${min === "free" ? "a free account" : "Starter — $15/mo"}` : min === "free" ? "Sign in free to unlock" : "Starter plan required"}</p>
-        <Button asChild size="sm" className="rounded-none">
+        <Button asChild size="sm" >
           {session ? <Link to="/pricing">See plans</Link> : <Link to={`/auth?next=${encodeURIComponent(location.pathname)}`}>{min === "free" ? "Sign in free" : "Sign in"}</Link>}
         </Button>
       </div>
@@ -117,7 +117,7 @@ export default function GameStats() {
                 <h1 className="mt-2 text-3xl font-semibold leading-tight md:text-5xl">{g.name}</h1>
                 <p className="mt-2 text-sm text-muted-foreground">by {g.creator_name ?? "Unknown"} · updated {new Date(g.updated_at_rbx).toLocaleDateString()}</p>
               </div>
-              <Button asChild variant="outline" className="rounded-none border-foreground bg-transparent">
+              <Button asChild variant="outline" className="border-foreground bg-transparent">
                 <a href={`https://www.roblox.com/games/${g.root_place_id}`} target="_blank" rel="noreferrer">Open on Roblox <ArrowUpRight /></a>
               </Button>
             </header>

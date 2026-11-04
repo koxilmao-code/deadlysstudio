@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        mono: ["IBM Plex Mono", "SFMono-Regular", "Consolas", "monospace"],
-        sans: ["Arial", "Helvetica Neue", "system-ui", "sans-serif"],
+        mono: ["Geist Mono", "SFMono-Regular", "Consolas", "monospace"],
+        sans: ["Geist", "system-ui", "-apple-system", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -54,6 +54,11 @@ export default {
         neon: "hsl(var(--neon-glow))",
         amber: "hsl(var(--amber))",
         cyan: "hsl(var(--cyan))",
+        chart: { DEFAULT: "hsl(var(--chart))", dim: "hsl(var(--chart-dim))" },
+        up: "hsl(var(--up))",
+        down: "hsl(var(--down))",
+        gold: { DEFAULT: "hsl(var(--gold))", deep: "hsl(var(--gold-deep))" },
+        violet: "hsl(var(--violet))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

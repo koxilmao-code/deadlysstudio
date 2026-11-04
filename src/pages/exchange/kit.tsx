@@ -56,7 +56,7 @@ export function SignInPrompt({ next }: { next: string }) {
   return (
     <Panel>
       <p className="text-sm text-muted-foreground">Sign in to use this section.</p>
-      <Button asChild className="mt-4 rounded-none"><Link to={`/auth?next=${encodeURIComponent(next)}`}>Sign in</Link></Button>
+      <Button asChild className="mt-4"><Link to={`/auth?next=${encodeURIComponent(next)}`}>Sign in</Link></Button>
     </Panel>
   );
 }
@@ -72,7 +72,7 @@ export function Gate({ min, children, next }: { min: Tier; children: ReactNode; 
   return (
     <Panel>
       <p className="text-sm">Requires the <strong>{TIER_NAME[min]}</strong> plan. You are on {TIER_NAME[tier]}.</p>
-      <Button asChild className="mt-4 rounded-none"><Link to="/exchange/subscription">View plans</Link></Button>
+      <Button asChild className="mt-4"><Link to="/exchange/subscription">View plans</Link></Button>
     </Panel>
   );
 }

@@ -13,7 +13,7 @@ export function PublicHeader() {
           <Link to="/#creative" className="hidden transition-colors hover:text-foreground md:inline">Creative</Link>
           <Link to="/pricing" className="transition-colors hover:text-foreground">Pricing</Link>
           <Link to="/#team" className="hidden transition-colors hover:text-foreground sm:inline">Team</Link>
-          <Button asChild size="sm" className="rounded-none px-4">
+          <Button asChild size="sm" className="px-4">
             {session ? <Link to="/exchange">Dashboard</Link> : <Link to="/auth?next=/exchange">Sign in</Link>}
           </Button>
         </nav>

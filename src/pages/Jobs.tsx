@@ -21,7 +21,7 @@ const perks = [
   ["04", "Game-first culture", "Work alongside people who understand Roblox and play what they build."],
 ];
 
-const inputClass = "h-12 rounded-none border-border bg-background px-4 focus-visible:ring-1 focus-visible:ring-foreground focus-visible:ring-offset-0";
+const inputClass = "h-12 border-border bg-background px-4 focus-visible:ring-1 focus-visible:ring-foreground focus-visible:ring-offset-0";
 
 export default function Jobs() {
   const [selectedRole, setSelectedRole] = useState<(typeof roles)[number] | null>(null);
@@ -70,7 +70,7 @@ export default function Jobs() {
                 <span className="text-xs text-muted-foreground">0{index + 1}</span>
                 <div><h3 className="text-2xl font-medium">{role.title}</h3><p className="mt-2 text-xs uppercase text-muted-foreground">{role.team} · {role.location}</p></div>
                 <div><p className="text-sm leading-relaxed text-muted-foreground">{role.summary}</p><div className="mt-4 flex flex-wrap gap-2">{role.traits.map((trait) => <span key={trait} className="border border-border px-2 py-1 text-[10px] uppercase text-muted-foreground">{trait}</span>)}</div></div>
-                <Button onClick={() => chooseRole(role)} variant="outline" className="rounded-none">Apply <ArrowRight /></Button>
+                <Button onClick={() => chooseRole(role)} variant="outline" >Apply <ArrowRight /></Button>
               </article>
             ))}
           </div>
@@ -83,9 +83,9 @@ export default function Jobs() {
             <form onSubmit={submit} className="grid gap-6" noValidate>
               <div className="grid gap-6 md:grid-cols-2"><Field label="Full name" name="applicant_name"><Input id="applicant_name" name="applicant_name" maxLength={100} required className={inputClass} /></Field><Field label="Contact email" name="contact_email"><Input id="contact_email" name="contact_email" type="email" maxLength={254} required className={inputClass} /></Field></div>
               <Field label="Portfolio or profile link" name="profile_url"><Input id="profile_url" name="profile_url" type="url" maxLength={500} required className={inputClass} placeholder="https://" /></Field>
-              <Field label="Why you" name="note"><Textarea id="note" name="note" minLength={20} maxLength={2000} required className="min-h-40 rounded-none border-border bg-background p-4 focus-visible:ring-1 focus-visible:ring-foreground focus-visible:ring-offset-0" placeholder="Tell us what you have done, what you care about, and why this role fits." /></Field>
+              <Field label="Why you" name="note"><Textarea id="note" name="note" minLength={20} maxLength={2000} required className="min-h-40 border-border bg-background p-4 focus-visible:ring-1 focus-visible:ring-foreground focus-visible:ring-offset-0" placeholder="Tell us what you have done, what you care about, and why this role fits." /></Field>
               {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
-              <Button type="submit" disabled={status === "sending"} className="h-14 justify-between rounded-none px-5">{status === "sending" ? "Sending…" : "Submit application"}<ArrowRight className="h-4 w-4" /></Button>
+              <Button type="submit" disabled={status === "sending"} className="h-14 justify-between px-5">{status === "sending" ? "Sending…" : "Submit application"}<ArrowRight className="h-4 w-4" /></Button>
             </form>}
           </div>
         </section>}

@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { TablesInsert } from "@/integrations/supabase/types";
 import { firstIssue, reviewSchema } from "@/lib/publicForms";
 
-const inputs = "h-12 rounded-none border-border bg-card px-4 focus-visible:ring-1 focus-visible:ring-foreground focus-visible:ring-offset-0";
+const inputs = "h-12 border-border bg-card px-4 focus-visible:ring-1 focus-visible:ring-foreground focus-visible:ring-offset-0";
 
 export default function GameReview() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
@@ -64,9 +64,9 @@ export default function GameReview() {
                   <Field label="Current stage" name="game_stage"><select id="game_stage" name="game_stage" className={`${inputs} w-full text-sm`} defaultValue="live"><option value="concept">Concept</option><option value="alpha">Alpha</option><option value="beta">Beta</option><option value="live">Live</option></select></Field>
                   <Field label="Primary goal" name="primary_goal"><select id="primary_goal" name="primary_goal" className={`${inputs} w-full text-sm`} defaultValue="overall-strategy"><option value="retention">Retention</option><option value="monetization">Monetization</option><option value="acquisition">Acquisition</option><option value="live-ops">Live operations</option><option value="overall-strategy">Overall strategy</option></select></Field>
                 </div>
-                <Field label="Context (optional)" name="context"><Textarea id="context" name="context" maxLength={2000} className="min-h-36 rounded-none border-border bg-card p-4 focus-visible:ring-1 focus-visible:ring-foreground focus-visible:ring-offset-0" placeholder="What is working, what feels stuck, and what would make this review valuable?" /></Field>
+                <Field label="Context (optional)" name="context"><Textarea id="context" name="context" maxLength={2000} className="min-h-36 border-border bg-card p-4 focus-visible:ring-1 focus-visible:ring-foreground focus-visible:ring-offset-0" placeholder="What is working, what feels stuck, and what would make this review valuable?" /></Field>
                 {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
-                <Button type="submit" disabled={status === "sending"} className="h-14 justify-between rounded-none px-5">{status === "sending" ? "Sending…" : "Request free review"}<ArrowRight className="h-4 w-4" /></Button>
+                <Button type="submit" disabled={status === "sending"} className="h-14 justify-between px-5">{status === "sending" ? "Sending…" : "Request free review"}<ArrowRight className="h-4 w-4" /></Button>
               </form>
             )}
           </div>

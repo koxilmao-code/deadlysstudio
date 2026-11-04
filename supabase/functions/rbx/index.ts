@@ -104,14 +104,14 @@ Deno.serve(async (req) => {
     if (b.action === "pulse") {
       const p = await pulse();
       const withChange = p.games.map((g) => ({ ...g, change: change(g) }));
-      const yearAgo = Date.now() - 90 * 864e5;
+      const recent = Date.now() - 90 * 864e5;
       return out({
         tracked: p.games.length,
         totalNow: p.games.reduce((s, g) => s + g.playing, 0),
         series: p.series,
         top: withChange.slice(0, 10),
         rising: withChange.filter((g) => g.change != null && (g.prior ?? 0) >= 50).sort((a, b) => b.change! - a.change!).slice(0, 6),
-        newest: withChange.filter((g) => g.created && Date.parse(g.created) > yearAgo).slice(0, 6),
+        newest: withChange.filter((g) => g.created && Date.parse(g.created) > recent).slice(0, 6),
         at: new Date(p.at).toISOString(),
       });
     }

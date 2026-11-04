@@ -66,7 +66,7 @@ export function Marketplace() {
     <>
       <PageHead index="04 / Marketplace" title="Marketplace" desc="Games, assets and services from Exchange creators. Platform compatibility is declared by the seller.">
         <div className="flex flex-wrap gap-2">
-          <Input placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} className="h-9 w-40 rounded-none" />
+          <Input placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} className="h-9 w-40" />
           <select value={cat} onChange={(e) => setCat(e.target.value)} className="h-9 border border-border bg-background px-3 text-sm"><option value="all">All categories</option>{LISTING_CATEGORIES.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
           <select value={compat} onChange={(e) => setCompat(e.target.value)} className="h-9 border border-border bg-background px-3 text-sm"><option value="all">All platforms</option>{Object.entries(COMPAT_LABEL).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
         </div>
@@ -96,17 +96,17 @@ export function Marketplace() {
         {session ? (
           <Panel title="Post a listing">
             <form onSubmit={create} className="space-y-3">
-              <Input placeholder="Title" value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} className="rounded-none" />
+              <Input placeholder="Title" value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })}  />
               <div className="flex gap-2">
                 <select value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })} className="h-9 flex-1 border border-border bg-background px-2 text-sm">{LISTING_CATEGORIES.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
                 <select value={f.compatibility} onChange={(e) => setF({ ...f, compatibility: e.target.value })} className="h-9 flex-1 border border-border bg-background px-2 text-sm">{Object.entries(COMPAT_LABEL).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
               </div>
-              <Input type="number" min={0} step="0.01" placeholder="Price (USD)" value={f.price_usd} onChange={(e) => setF({ ...f, price_usd: e.target.value })} className="rounded-none" />
-              <Textarea placeholder="Description" value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} maxLength={3000} className="rounded-none" />
-              <Input placeholder="Image URL (https://)" value={f.image_url} onChange={(e) => setF({ ...f, image_url: e.target.value })} className="rounded-none" />
-              <Input placeholder="Contact / purchase URL (https://)" value={f.contact_url} onChange={(e) => setF({ ...f, contact_url: e.target.value })} className="rounded-none" />
+              <Input type="number" min={0} step="0.01" placeholder="Price (USD)" value={f.price_usd} onChange={(e) => setF({ ...f, price_usd: e.target.value })}  />
+              <Textarea placeholder="Description" value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} maxLength={3000}  />
+              <Input placeholder="Image URL (https://)" value={f.image_url} onChange={(e) => setF({ ...f, image_url: e.target.value })}  />
+              <Input placeholder="Contact / purchase URL (https://)" value={f.contact_url} onChange={(e) => setF({ ...f, contact_url: e.target.value })}  />
               <p className="text-[11px] text-muted-foreground">Only declare platforms your item actually supports.</p>
-              <Button type="submit" className="w-full rounded-none">Publish</Button>
+              <Button type="submit" className="w-full">Publish</Button>
             </form>
           </Panel>
         ) : <SignInPrompt next="/exchange/marketplace" />}
@@ -201,7 +201,7 @@ export function CreativeStudio() {
                     </div>
                     <div className="flex items-start gap-2">
                       <span className="border border-border px-2 py-0.5 text-[11px] uppercase">{statusLabel(r.status)}</span>
-                      {["ready_for_review", "completed"].includes(r.status) && <Button size="sm" variant="outline" className="h-6 rounded-none text-[11px]" onClick={() => revise(r.id)}>Request revision</Button>}
+                      {["ready_for_review", "completed"].includes(r.status) && <Button size="sm" variant="outline" className="h-6 text-[11px]" onClick={() => revise(r.id)}>Request revision</Button>}
                     </div>
                   </div>
                 ))}
@@ -221,12 +221,12 @@ export function CreativeStudio() {
                 </div>
                 <GamePicker games={games.data} value={gameId} onChange={setGid} />
                 {FIELDS[kind].map(([k, l]) => (
-                  <Textarea key={k} placeholder={l} rows={k === "description" || k === "moments" ? 3 : 1} value={brief[k] ?? ""} onChange={(e) => setBrief({ ...brief, [k]: e.target.value })} maxLength={2000} className="min-h-0 rounded-none" />
+                  <Textarea key={k} placeholder={l} rows={k === "description" || k === "moments" ? 3 : 1} value={brief[k] ?? ""} onChange={(e) => setBrief({ ...brief, [k]: e.target.value })} maxLength={2000} className="min-h-0" />
                 ))}
                 <label className="block text-xs text-muted-foreground">Preferred delivery date
-                  <Input type="date" min={new Date().toISOString().slice(0, 10)} value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 rounded-none" />
+                  <Input type="date" min={new Date().toISOString().slice(0, 10)} value={date} onChange={(e) => setDate(e.target.value)} className="mt-1" />
                 </label>
-                <Button type="submit" disabled={busy || remaining < 1} className="w-full rounded-none">
+                <Button type="submit" disabled={busy || remaining < 1} className="w-full">
                   {remaining < 1 ? "No credits remaining" : `Request ${kind} · ${remaining} left`}
                 </Button>
               </form>
@@ -309,8 +309,8 @@ export function ABTesting() {
                     </p>
                     <div className="flex gap-2">
                       <span className="border border-border px-2 py-0.5 uppercase">{t.status}</span>
-                      {t.status === "draft" && <Button size="sm" variant="outline" className="h-6 rounded-none text-[11px]" onClick={() => setStatus(t.id, "running")}>Start</Button>}
-                      {t.status === "running" && <Button size="sm" variant="outline" className="h-6 rounded-none text-[11px]" onClick={() => setStatus(t.id, "ended")}>End</Button>}
+                      {t.status === "draft" && <Button size="sm" variant="outline" className="h-6 text-[11px]" onClick={() => setStatus(t.id, "running")}>Start</Button>}
+                      {t.status === "running" && <Button size="sm" variant="outline" className="h-6 text-[11px]" onClick={() => setStatus(t.id, "ended")}>End</Button>}
                     </div>
                   </div>
                 </Panel>
@@ -320,14 +320,14 @@ export function ABTesting() {
           <Panel title="New test">
             {!games.data?.length ? <NoGames /> : (
               <form onSubmit={create} className="space-y-3">
-                <Input placeholder="Test name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className="rounded-none" />
+                <Input placeholder="Test name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })}  />
                 <GamePicker games={games.data} value={gid ?? games.data[0].id} onChange={setGid} />
                 <select value={f.asset_type} onChange={(e) => setF({ ...f, asset_type: e.target.value })} className="h-9 w-full border border-border bg-background px-3 text-sm">
                   {["thumbnail", "icon", "title", "promo", "trailer"].map((a) => <option key={a} value={a}>{a}</option>)}
                 </select>
-                <Input placeholder="Version A (URL or text)" value={f.variant_a} onChange={(e) => setF({ ...f, variant_a: e.target.value })} className="rounded-none" />
-                <Input placeholder="Version B (URL or text)" value={f.variant_b} onChange={(e) => setF({ ...f, variant_b: e.target.value })} className="rounded-none" />
-                <Button type="submit" className="w-full rounded-none">Create test</Button>
+                <Input placeholder="Version A (URL or text)" value={f.variant_a} onChange={(e) => setF({ ...f, variant_a: e.target.value })}  />
+                <Input placeholder="Version B (URL or text)" value={f.variant_b} onChange={(e) => setF({ ...f, variant_b: e.target.value })}  />
+                <Button type="submit" className="w-full">Create test</Button>
               </form>
             )}
           </Panel>
@@ -350,8 +350,8 @@ export function Subscription() {
     <>
       <PageHead index="10 / Subscription" title="Subscription" desc={session ? `Current plan: ${tierName(tier)}${periodEnd && tier !== "free" ? ` · renews ${new Date(periodEnd).toLocaleDateString()}` : ""}` : "Choose a plan."}>
         {session && <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="rounded-none" onClick={() => refreshPlan(true)}>Refresh status</Button>
-          {tier !== "free" && <Button size="sm" className="rounded-none" disabled={busy} onClick={portal}>Manage billing</Button>}
+          <Button variant="outline" size="sm"  onClick={() => refreshPlan(true)}>Refresh status</Button>
+          {tier !== "free" && <Button size="sm"  disabled={busy} onClick={portal}>Manage billing</Button>}
         </div>}
       </PageHead>
       <PlanGrid next="/exchange/subscription" />
@@ -401,17 +401,17 @@ export function CreatorProfile() {
           <h1 className="text-3xl font-semibold">{p.display_name}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{platforms.join(" · ") || "No public games yet"}</p>
         </div>
-        {own && !edit && <Button variant="outline" className="rounded-none" onClick={() => setEdit({ display_name: p.display_name, bio: p.bio ?? "", services: p.services ?? "", avatar_url: p.avatar_url ?? "" })}>Edit profile</Button>}
+        {own && !edit && <Button variant="outline"  onClick={() => setEdit({ display_name: p.display_name, bio: p.bio ?? "", services: p.services ?? "", avatar_url: p.avatar_url ?? "" })}>Edit profile</Button>}
       </div>
       {edit && (
         <Panel title="Edit profile" className="mt-6">
           <div className="grid gap-3 md:grid-cols-2">
-            <Input placeholder="Display name" value={edit.display_name} onChange={(e) => setEdit({ ...edit, display_name: e.target.value })} className="rounded-none" />
-            <Input placeholder="Profile image URL (https://)" value={edit.avatar_url} onChange={(e) => setEdit({ ...edit, avatar_url: e.target.value })} className="rounded-none" />
-            <Textarea placeholder="Bio" value={edit.bio} onChange={(e) => setEdit({ ...edit, bio: e.target.value })} className="rounded-none" />
-            <Textarea placeholder="Services offered" value={edit.services} onChange={(e) => setEdit({ ...edit, services: e.target.value })} className="rounded-none" />
+            <Input placeholder="Display name" value={edit.display_name} onChange={(e) => setEdit({ ...edit, display_name: e.target.value })}  />
+            <Input placeholder="Profile image URL (https://)" value={edit.avatar_url} onChange={(e) => setEdit({ ...edit, avatar_url: e.target.value })}  />
+            <Textarea placeholder="Bio" value={edit.bio} onChange={(e) => setEdit({ ...edit, bio: e.target.value })}  />
+            <Textarea placeholder="Services offered" value={edit.services} onChange={(e) => setEdit({ ...edit, services: e.target.value })}  />
           </div>
-          <div className="mt-3 flex gap-2"><Button className="rounded-none" onClick={save}>Save</Button><Button variant="ghost" onClick={() => setEdit(null)}>Cancel</Button></div>
+          <div className="mt-3 flex gap-2"><Button  onClick={save}>Save</Button><Button variant="ghost" onClick={() => setEdit(null)}>Cancel</Button></div>
         </Panel>
       )}
       <div className="mt-8 grid gap-6 lg:grid-cols-3">

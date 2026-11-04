@@ -4,23 +4,23 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
+    --background: 240 5% 4%;
+    --foreground: 0 0% 98%;
 
-    --card: 240 4% 5%;
-    --card-foreground: 0 0% 100%;
+    --card: 240 4% 8.5%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 240 4% 5%;
+    --popover: 240 4% 9%;
     --popover-foreground: 0 0% 100%;
 
     --primary: 0 0% 100%;
     --primary-foreground: 0 0% 0%;
 
-    --secondary: 240 4% 10%;
+    --secondary: 240 4% 12%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 240 4% 7%;
-    --muted-foreground: 240 4% 56%;
+    --muted: 240 4% 11%;
+    --muted-foreground: 240 4% 60%;
 
     --accent: 0 0% 100%;
     --accent-foreground: 0 0% 0%;
@@ -28,15 +28,24 @@
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 4% 11%;
-    --input: 240 4% 16%;
+    --border: 240 4% 14%;
+    --input: 240 4% 18%;
     --ring: 0 0% 100%;
 
-    --radius: 0.125rem;
+    --radius: 0.875rem;
 
     --neon-glow: 145 80% 42%;
     --amber: 35 95% 55%;
     --cyan: 185 80% 50%;
+
+    /* Analytics palette */
+    --chart: 217 91% 60%;
+    --chart-dim: 217 45% 24%;
+    --up: 142 64% 52%;
+    --down: 0 78% 62%;
+    --gold: 42 92% 62%;
+    --gold-deep: 28 72% 42%;
+    --violet: 262 83% 74%;
 
     --sidebar-background: 240 4% 5%;
     --sidebar-foreground: 0 0% 100%;
@@ -146,8 +155,29 @@
   }
 
   .studio-shell {
-    @apply mx-auto w-full px-5 md:px-8;
-    max-width: 96rem;
+    @apply mx-auto w-full px-4 md:px-8;
+    max-width: 84rem;
+  }
+
+  /* Public pages leave room for the desktop icon rail. */
+  .public-page {
+    @apply lg:pl-[4.5rem];
+  }
+
+  .terminal-card {
+    @apply rounded-3xl border border-border bg-card;
+  }
+
+  .live-dot {
+    @apply relative inline-flex h-2 w-2 rounded-full bg-up;
+  }
+  .live-dot::after {
+    content: "";
+    @apply absolute inset-0 animate-ping rounded-full bg-up opacity-60;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 
   .section-index {

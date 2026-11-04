@@ -72,8 +72,8 @@ function LockedPreview({ tier, signedIn }: { tier: Tier; signedIn: boolean }) {
           </p>
         </div>
         <div className="flex gap-2">
-          {!signedIn && <Button asChild variant="outline" className="rounded-none"><Link to={`/auth?next=${encodeURIComponent(NEXT)}`}>Sign in</Link></Button>}
-          <Button asChild className="rounded-none"><Link to="/exchange/subscription">Upgrade to Starter</Link></Button>
+          {!signedIn && <Button asChild variant="outline" ><Link to={`/auth?next=${encodeURIComponent(NEXT)}`}>Sign in</Link></Button>}
+          <Button asChild ><Link to="/exchange/subscription">Upgrade to Starter</Link></Button>
         </div>
       </div>
     </Panel>
@@ -190,11 +190,11 @@ function Editor({ advanced }: { advanced: boolean }) {
         <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" className="hidden"
           onChange={(e) => { onFile(e.target.files?.[0]); e.target.value = ""; }} />
         <div className="mx-auto mt-3 flex max-w-[34rem] flex-wrap gap-2">
-          <Button size="sm" variant="outline" className="rounded-none" onClick={() => fileRef.current?.click()}><Upload className="mr-1 h-3.5 w-3.5" />{source ? "Replace icon" : "Upload icon"}</Button>
-          <Button size="sm" variant={compare ? "default" : "outline"} className="rounded-none" disabled={!source} onClick={() => setCompare((c) => !c)} aria-pressed={compare}>
+          <Button size="sm" variant="outline"  onClick={() => fileRef.current?.click()}><Upload className="mr-1 h-3.5 w-3.5" />{source ? "Replace icon" : "Upload icon"}</Button>
+          <Button size="sm" variant={compare ? "default" : "outline"}  disabled={!source} onClick={() => setCompare((c) => !c)} aria-pressed={compare}>
             <Columns2 className="mr-1 h-3.5 w-3.5" />Before / after
           </Button>
-          <Button size="sm" variant="ghost" className="rounded-none" onClick={() => setD({ ...BASE, text: d.text })}><RotateCcw className="mr-1 h-3.5 w-3.5" />Reset design</Button>
+          <Button size="sm" variant="ghost"  onClick={() => setD({ ...BASE, text: d.text })}><RotateCcw className="mr-1 h-3.5 w-3.5" />Reset design</Button>
         </div>
       </div>
 
@@ -216,7 +216,7 @@ function Editor({ advanced }: { advanced: boolean }) {
               </div>
               <label className="block text-xs text-muted-foreground">Custom text
                 <Input value={d.text} maxLength={TEXT_MAX} placeholder="e.g. UPDATE SOON"
-                  onChange={(e) => set("text", e.target.value.replace(/[\u0000-\u001f\u007f]/g, "").slice(0, TEXT_MAX))} className="mt-1 rounded-none" />
+                  onChange={(e) => set("text", e.target.value.replace(/[\u0000-\u001f\u007f]/g, "").slice(0, TEXT_MAX))} className="mt-1" />
               </label>
             </>
           )}
@@ -268,8 +268,8 @@ function Editor({ advanced }: { advanced: boolean }) {
                 {advanced ? (
                   <>
                     <div className="flex gap-2">
-                      <Input value={presetName} maxLength={30} placeholder="Preset name" onChange={(e) => setPresetName(e.target.value)} className="rounded-none" />
-                      <Button size="sm" className="rounded-none" onClick={savePreset}>Save</Button>
+                      <Input value={presetName} maxLength={30} placeholder="Preset name" onChange={(e) => setPresetName(e.target.value)}  />
+                      <Button size="sm"  onClick={savePreset}>Save</Button>
                     </div>
                     {saved.length === 0 ? <p className="text-xs text-muted-foreground">Save the current look to reuse it on future updates.</p> : (
                       <ul className="divide-y divide-border border border-border">
@@ -292,7 +292,7 @@ function Editor({ advanced }: { advanced: boolean }) {
               <Segmented label="Size" value={String(advanced ? size : 512)} onChange={(v) => setSize(Number(v))}
                 options={EXPORT_SIZES.advanced.map((s) => [String(s), `${s}×${s}${!advanced && s > 512 ? " · Premium" : ""}`])}
                 disabled={(v) => !advanced && Number(v) > 512} />
-              <Button className="w-full rounded-none" disabled={!source || busy} onClick={exportOne}>
+              <Button className="w-full" disabled={!source || busy} onClick={exportOne}>
                 <Download className="mr-2 h-4 w-4" />{source ? `Download ${exportName(d.text, fmt)}` : "Upload your icon to export"}
               </Button>
               <Group title="Full countdown pack">
@@ -300,9 +300,9 @@ function Editor({ advanced }: { advanced: boolean }) {
                   <>
                     <p className="text-xs text-muted-foreground">All 12 stages (24 HOURS → NOW!) with this design, in one ZIP.</p>
                     {pack ? (
-                      <Button className="w-full rounded-none" onClick={() => deliverFile(pack, `outrun-countdown-pack-${fmt}.zip`)}><Download className="mr-2 h-4 w-4" />Download pack (12 icons)</Button>
+                      <Button className="w-full" onClick={() => deliverFile(pack, `outrun-countdown-pack-${fmt}.zip`)}><Download className="mr-2 h-4 w-4" />Download pack (12 icons)</Button>
                     ) : (
-                      <Button variant="outline" className="w-full rounded-none" disabled={!source || busy} onClick={buildPack}><Package className="mr-2 h-4 w-4" />{busy ? "Building…" : "Build countdown pack"}</Button>
+                      <Button variant="outline" className="w-full" disabled={!source || busy} onClick={buildPack}><Package className="mr-2 h-4 w-4" />{busy ? "Building…" : "Build countdown pack"}</Button>
                     )}
                   </>
                 ) : <PremiumNote>Export all 12 countdown stages at once, plus 1024×1024 exports, with Premium or Scale.</PremiumNote>}

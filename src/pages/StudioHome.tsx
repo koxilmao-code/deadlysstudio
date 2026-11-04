@@ -101,7 +101,7 @@ export default function StudioHome() {
                   </div>
                   <div className="mt-5 flex flex-wrap gap-2">{project.tags.map(tag => <span key={tag} className="border border-border px-2 py-1 text-[10px] uppercase text-muted-foreground">{tag}</span>)}</div>
                   <p className="mt-5 min-h-10 text-sm leading-relaxed text-muted-foreground">{project.description}</p>
-                  <Button asChild variant="outline" className="mt-6 w-full rounded-none border-foreground bg-transparent text-foreground hover:bg-foreground hover:text-background">
+                  <Button asChild variant="outline" className="mt-6 w-full border-foreground bg-transparent text-foreground hover:bg-foreground hover:text-background">
                     <a href={project.url} target="_blank" rel="noreferrer">Launch Experience <ArrowUpRight /></a>
                   </Button>
                 </div>
@@ -138,7 +138,7 @@ export default function StudioHome() {
         <section className="border-t border-border py-24 md:py-36">
           <div className="studio-shell grid gap-10 md:grid-cols-[1fr_auto] md:items-end">
             <div><p className="section-index">06 / Next move</p><h2 className="mt-4 max-w-4xl text-5xl font-medium leading-[0.95] md:text-8xl">Your next front-page moment starts here.</h2></div>
-            <Button asChild className="h-14 rounded-none px-7">
+            <Button asChild className="h-14 px-7">
               <Link to="/pricing">See plans <ArrowUpRight /></Link>
             </Button>
           </div>

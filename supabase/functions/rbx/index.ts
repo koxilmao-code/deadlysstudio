@@ -16,7 +16,11 @@ const Body = z.discriminatedUnion("action", [
   z.object({ action: z.literal("search"), q: z.string().trim().min(1).max(200) }),
   z.object({ action: z.literal("game"), id: z.coerce.number().int().positive(), range: z.enum(["24h", "7d", "30d", "90d", "1y"]).default("7d") }),
   z.object({ action: z.literal("poll") }),
+  z.object({ action: z.literal("pulse") }),
 ]);
+/** Live-only fields that are not columns on rbx_universes. */
+const LIVE_ONLY = ["playing", "visits", "favorites", "up_votes", "down_votes", "description", "creator_id", "creator_type", "creator_verified"];
+const universeRow = (g: Record<string, unknown>) => Object.fromEntries(Object.entries(g).filter(([k]) => !LIVE_ONLY.includes(k)));
 
 async function get(url: string) {
   const r = await fetch(url, { headers: { Accept: "application/json" } });
@@ -58,6 +62,7 @@ async function fetchLive(ids: number[]) {
   const th = new Map((thumbs.data ?? []).map((x: any) => [x.universeId, x.thumbnails?.[0]?.imageUrl]));
   return (games.data ?? []).map((g: any) => ({
     universe_id: g.id, root_place_id: g.rootPlaceId, name: g.name, creator_name: g.creator?.name ?? null,
+    creator_id: g.creator?.id ?? null, creator_type: g.creator?.type ?? null, creator_verified: !!g.creator?.hasVerifiedBadge,
     icon_url: ic.get(g.id) ?? null, thumb_url: th.get(g.id) ?? null, genre: g.genre ?? null,
     created_at_rbx: g.created, updated_at_rbx: g.updated, max_players: g.maxPlayers, price: g.price ?? null,
     description: g.description ?? "",
@@ -69,9 +74,21 @@ async function fetchLive(ids: number[]) {
 async function record(live: any[]) {
   const c = db();
   const now = new Date().toISOString();
-  await c.from("rbx_universes").upsert(live.map(({ playing, visits, favorites, up_votes, down_votes, description, ...u }) => ({ ...u, last_polled: now })));
+  await c.from("rbx_universes").upsert(live.map((g) => ({ ...universeRow(g), last_polled: now })));
   await c.from("rbx_snapshots").insert(live.map((g) => ({ universe_id: g.universe_id, playing: g.playing, visits: g.visits, favorites: g.favorites, up_votes: g.up_votes, down_votes: g.down_votes })));
 }
+
+type PulseGame = { id: number; name: string; creator: string | null; icon: string | null; genre: string | null; created: string | null; playing: number; prior: number | null };
+let pulseCache: { at: number; games: PulseGame[]; series: { t: string; v: number }[] } | null = null;
+/** Latest reading of every tracked game (cached 2 min per worker) — the basis for rankings. */
+async function pulse() {
+  if (pulseCache && Date.now() - pulseCache.at < 120_000) return pulseCache;
+  const { data, error } = await db().rpc("rbx_pulse");
+  if (error) throw error;
+  pulseCache = { at: Date.now(), games: (data as any)?.games ?? [], series: (data as any)?.series ?? [] };
+  return pulseCache;
+}
+const change = (g: PulseGame) => (g.prior && g.prior > 0 ? ((g.playing - g.prior) / g.prior) * 100 : null);
 
 const RANGE_MS: Record<string, number> = { "24h": 864e5, "7d": 6048e5, "30d": 2592e6, "90d": 7776e6, "1y": 31536e6 };
 
@@ -83,6 +100,21 @@ Deno.serve(async (req) => {
     const b = parsed.data;
 
     if (b.action === "search") return out({ results: await search(b.q) });
+
+    if (b.action === "pulse") {
+      const p = await pulse();
+      const withChange = p.games.map((g) => ({ ...g, change: change(g) }));
+      const recent = Date.now() - 90 * 864e5;
+      return out({
+        tracked: p.games.length,
+        totalNow: p.games.reduce((s, g) => s + g.playing, 0),
+        series: p.series,
+        top: withChange.slice(0, 10),
+        rising: withChange.filter((g) => g.change != null && (g.prior ?? 0) >= 50).sort((a, b) => b.change! - a.change!).slice(0, 6),
+        newest: withChange.filter((g) => g.created && Date.parse(g.created) > recent).slice(0, 6),
+        at: new Date(p.at).toISOString(),
+      });
+    }
 
     const c = db();
     if (b.action === "poll") {
@@ -113,13 +145,16 @@ Deno.serve(async (req) => {
     if (!live) return out({ error: "Game not found" }, 404);
     const { data: last } = await c.from("rbx_snapshots").select("captured_at").eq("universe_id", b.id).order("captured_at", { ascending: false }).limit(1).maybeSingle();
     if (!last || Date.now() - new Date(last.captured_at).getTime() > MIN_GAP_MS) await record([live]);
-    else await c.from("rbx_universes").upsert({ ...Object.fromEntries(Object.entries(live).filter(([k]) => !["playing", "visits", "favorites", "up_votes", "down_votes", "description"].includes(k))) });
+    else await c.from("rbx_universes").upsert(universeRow(live));
 
     const from = new Date(Date.now() - RANGE_MS[b.range]).toISOString();
     const { data: history } = await c.from("rbx_snapshots").select("captured_at,playing,visits,favorites,up_votes,down_votes")
       .eq("universe_id", b.id).gte("captured_at", from).order("captured_at").limit(5000);
     const { data: meta } = await c.from("rbx_universes").select("first_seen").eq("universe_id", b.id).maybeSingle();
-    return out({ game: live, history: history ?? [], trackedSince: meta?.first_seen ?? null });
+    const ranked = await pulse().catch(() => null);
+    const pos = ranked ? ranked.games.filter((g) => g.id !== b.id && g.playing > live.playing).length + 1 : null;
+    const rank = ranked && ranked.games.length ? { rank: pos, of: Math.max(ranked.games.length, pos ?? 0) } : null;
+    return out({ game: live, history: history ?? [], trackedSince: meta?.first_seen ?? null, rank });
   } catch (e) {
     console.error("[rbx]", e);
     return out({ error: e instanceof Error ? e.message : "Failed" }, 500);

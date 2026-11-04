@@ -25,7 +25,7 @@ export default function ExchangeLayout() {
             {session ? (
               <Button size="sm" variant="ghost" onClick={signOut}>Sign out</Button>
             ) : (
-              <Button size="sm" asChild className="rounded-none"><Link to="/auth?next=/exchange">Sign in</Link></Button>
+              <Button size="sm" asChild ><Link to="/auth?next=/exchange">Sign in</Link></Button>
             )}
           </div>
         </div>

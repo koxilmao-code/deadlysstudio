@@ -37,10 +37,10 @@ export function PlanGrid({ next = "/pricing" }: { next?: string }) {
             <p className="mt-1 text-xs text-muted-foreground">{p.note}</p>
             <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">{p.features.map((f) => <li key={f} className="border-t border-border pt-2">{f}</li>)}</ul>
             <div className="mt-6">
-              {current ? <Button disabled variant="outline" className="w-full rounded-none">{session ? "Your plan" : "You're here"}</Button>
-                : !p.checkout ? (session ? null : <Button asChild variant="outline" className="w-full rounded-none"><Link to={`/auth?next=${next}`}>Sign in free</Link></Button>)
-                : !session ? <Button asChild className="w-full rounded-none"><Link to={`/auth?next=${next}`}>Get {p.name}</Link></Button>
-                : <Button className="w-full rounded-none" disabled={!!busy} onClick={() => run("create-checkout", p.checkout)}>{busy === p.checkout ? "Opening…" : `Get ${p.name}`}</Button>}
+              {current ? <Button disabled variant="outline" className="w-full">{session ? "Your plan" : "You're here"}</Button>
+                : !p.checkout ? (session ? null : <Button asChild variant="outline" className="w-full"><Link to={`/auth?next=${next}`}>Sign in free</Link></Button>)
+                : !session ? <Button asChild className="w-full"><Link to={`/auth?next=${next}`}>Get {p.name}</Link></Button>
+                : <Button className="w-full" disabled={!!busy} onClick={() => run("create-checkout", p.checkout)}>{busy === p.checkout ? "Opening…" : `Get ${p.name}`}</Button>}
             </div>
           </div>
         );

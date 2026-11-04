@@ -59,13 +59,13 @@ export default function AuthPage() {
         <Link to="/" className="text-sm font-semibold uppercase">Deadly’s Studio</Link>
         <h1 className="mt-10 text-3xl font-semibold">{mode === "in" ? "Sign in" : "Create account"}</h1>
         <p className="mt-2 text-sm text-muted-foreground">Creator Exchange — analytics, creative services and marketplace.</p>
-        <Button variant="outline" className="mt-8 w-full rounded-none" onClick={google}>Continue with Google</Button>
+        <Button variant="outline" className="mt-8 w-full" onClick={google}>Continue with Google</Button>
         <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />or<span className="h-px flex-1 bg-border" /></div>
         <form onSubmit={submit} className="space-y-4">
-          <div><Label htmlFor="em">Email</Label><Input id="em" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1 rounded-none" /></div>
-          <div><Label htmlFor="pw">Password</Label><Input id="pw" type="password" autoComplete={mode === "in" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1 rounded-none" /></div>
+          <div><Label htmlFor="em">Email</Label><Input id="em" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1" /></div>
+          <div><Label htmlFor="pw">Password</Label><Input id="pw" type="password" autoComplete={mode === "in" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1" /></div>
           {msg && <p className={`text-sm ${msg.ok ? "text-foreground" : "text-destructive"}`} role="status">{msg.text}</p>}
-          <Button type="submit" disabled={busy} className="w-full rounded-none">{busy ? "…" : mode === "in" ? "Sign in" : "Create account"}</Button>
+          <Button type="submit" disabled={busy} className="w-full">{busy ? "…" : mode === "in" ? "Sign in" : "Create account"}</Button>
         </form>
         <button className="mt-6 text-xs text-muted-foreground hover:text-foreground" onClick={() => { setMode(mode === "in" ? "up" : "in"); setMsg(null); }}>
           {mode === "in" ? "No account? Create one" : "Have an account? Sign in"}

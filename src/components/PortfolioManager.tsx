@@ -31,7 +31,7 @@ export function PortfolioManager() {
       </div>
 
       <Dialog open={Boolean(draft)} onOpenChange={open => { if (!open) setDraft(null); }}>
-        <DialogContent className="rounded-none border-border bg-card sm:max-w-xl"><DialogHeader><DialogTitle>{projects.some(project => project.id === draft?.id) ? "Edit project" : "Add project"}</DialogTitle></DialogHeader>
+        <DialogContent className="border-border bg-card sm:max-w-xl"><DialogHeader><DialogTitle>{projects.some(project => project.id === draft?.id) ? "Edit project" : "Add project"}</DialogTitle></DialogHeader>
           {draft && <form onSubmit={save} className="space-y-4"><div className="grid gap-4 sm:grid-cols-2"><Input aria-label="Project title" placeholder="Title" value={draft.title} onChange={event => setDraft({ ...draft, title: event.target.value })} /><Input aria-label="Studio" placeholder="Studio" value={draft.studio} onChange={event => setDraft({ ...draft, studio: event.target.value })} /></div><Input aria-label="Tags" placeholder="Tags, separated by commas" value={tags} onChange={event => setTags(event.target.value)} /><Textarea aria-label="Description" placeholder="Muted description" value={draft.description} onChange={event => setDraft({ ...draft, description: event.target.value })} /><Input aria-label="Roblox link" type="url" placeholder="Roblox link" value={draft.url} onChange={event => setDraft({ ...draft, url: event.target.value })} /><Input aria-label="Artwork URL" type="url" placeholder="Artwork URL" value={draft.image} onChange={event => setDraft({ ...draft, image: event.target.value })} /><Button type="submit" className="w-full">Save project</Button></form>}
         </DialogContent>
       </Dialog>

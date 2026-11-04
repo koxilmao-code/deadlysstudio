@@ -98,13 +98,13 @@ export default function Overview() {
                 {p.label}{!p.available && " · soon"}
               </button>))}
             </div>
-            <Input placeholder="Game name" value={name} onChange={(e) => setName(e.target.value)} maxLength={120} className="rounded-none" />
-            <Input placeholder={PLATFORMS[platform].idLabel} value={ext} onChange={(e) => setExt(e.target.value)} className="rounded-none" />
+            <Input placeholder="Game name" value={name} onChange={(e) => setName(e.target.value)} maxLength={120}  />
+            <Input placeholder={PLATFORMS[platform].idLabel} value={ext} onChange={(e) => setExt(e.target.value)}  />
             <select value={genre} onChange={(e) => setGenre(e.target.value)} className="h-9 w-full border border-border bg-background px-3 text-sm capitalize">
               {GENRES.map((g) => <option key={g} value={g}>{g}</option>)}
             </select>
-            <Input placeholder="Short description (optional)" value={desc} onChange={(e) => setDesc(e.target.value)} maxLength={2000} className="rounded-none" />
-            <Button type="submit" className="w-full rounded-none">Add game</Button>
+            <Input placeholder="Short description (optional)" value={desc} onChange={(e) => setDesc(e.target.value)} maxLength={2000}  />
+            <Button type="submit" className="w-full">Add game</Button>
           </form>
         </Panel>
       </div>

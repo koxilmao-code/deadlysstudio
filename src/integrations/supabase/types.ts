@@ -952,6 +952,7 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      rbx_pulse: { Args: never; Returns: Json }
       request_creative_revision: {
         Args: { _note: string; _request_id: string }
         Returns: undefined

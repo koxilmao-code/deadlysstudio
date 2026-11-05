@@ -21,12 +21,16 @@ function Tip({ active, payload, fmt, hourly, unitLabel }: { active?: boolean; pa
 
 /** Dashed top / middle / base lines with the ceiling printed above, matching the Overview cards. */
 function Frame({ max, fmt, first, last, hourly, children }: { max: number; fmt: Fmt; first?: string; last?: string; hourly: boolean; children: ReactNode }) {
+  // A 24h hourly axis starts and ends at the same clock time, so add the date when the days differ.
+  const label = (iso: string) => hourly && first && last && new Date(first).toDateString() !== new Date(last).toDateString()
+    ? new Date(iso).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
+    : dateLabel(iso, hourly);
   return (
     <div>
       <p className="text-xs text-muted-foreground/70 tabular">{fmt(max)}</p>
       <div className="h-36 md:h-44">{children}</div>
       <div className="mt-2 flex justify-between text-xs text-muted-foreground tabular">
-        <span>{first ? dateLabel(first, hourly) : ""}</span><span>{last ? dateLabel(last, hourly) : ""}</span>
+        <span>{first ? label(first) : ""}</span><span>{last ? label(last) : ""}</span>
       </div>
     </div>
   );

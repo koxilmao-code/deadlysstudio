@@ -6,6 +6,7 @@ import { PlanGrid } from "@/components/PlanGrid";
 import { Button } from "@/components/ui/button";
 import { PublicFooter, PublicHeader } from "@/components/PublicChrome";
 import { readProjects, team, type PortfolioProject } from "@/data/portfolio";
+import { LivePulse } from "@/components/analytics/LivePulse";
 
 const metrics = [
   ["50+", "Games Scaled"],
@@ -37,11 +38,11 @@ export default function StudioHome() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="public-page min-h-screen bg-background text-foreground">
       <PublicHeader />
 
       <main>
-        <section className="studio-shell flex flex-col justify-end pb-10 pt-40 md:pb-16">
+        <section id="search" className="studio-shell flex scroll-mt-24 flex-col justify-end pb-10 pt-36 md:pb-16 md:pt-40">
           <p className="mb-8 text-xs uppercase text-muted-foreground">Roblox analytics · Human-made thumbnails & trailers</p>
           <h1 className="max-w-6xl text-[clamp(3rem,9vw,8.5rem)] font-semibold leading-[0.88]">
             Know your numbers.<br /><span className="text-muted-foreground">Outrun the front page.</span>
@@ -65,7 +66,15 @@ export default function StudioHome() {
           </div>
         </section>
 
-        <section id="analytics" className="studio-shell py-24 md:py-36">
+        <section id="charts" className="studio-shell scroll-mt-24 pt-20 md:pt-28" aria-labelledby="charts-title">
+          <div className="mb-8 flex flex-col gap-3 border-b border-border pb-5 md:flex-row md:items-end md:justify-between">
+            <div><p className="section-index">00 / Live charts</p><h2 id="charts-title" className="mt-3 text-4xl font-medium md:text-6xl">What Roblox is playing right now.</h2></div>
+            <p className="max-w-sm text-sm text-muted-foreground">Real readings every 10 minutes from the games Outrun tracks. Tap any game for its full stats.</p>
+          </div>
+          <LivePulse />
+        </section>
+
+        <section id="analytics" className="studio-shell scroll-mt-24 py-24 md:py-36">
           <div className="mb-12 border-b border-border pb-5"><p className="section-index">01 / Analytics</p><h2 className="mt-3 text-4xl font-medium md:text-6xl">Every metric, one clean page.</h2></div>
           <div className="grid gap-px border border-border bg-border md:grid-cols-2 xl:grid-cols-4">
             {features.analytics.map(([t, d]) => <div key={t} className="bg-card p-6"><h3 className="text-lg font-medium">{t}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{d}</p></div>)}

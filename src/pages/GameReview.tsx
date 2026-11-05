@@ -31,7 +31,7 @@ export default function GameReview() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="public-page min-h-screen bg-background text-foreground">
       <PublicHeader />
       <main>
         <section className="studio-shell grid min-h-[78vh] gap-12 pb-20 pt-32 lg:grid-cols-[1fr_0.8fr] lg:items-end lg:pb-28">

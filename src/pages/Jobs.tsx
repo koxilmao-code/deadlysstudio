@@ -47,7 +47,7 @@ export default function Jobs() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="public-page min-h-screen bg-background text-foreground">
       <PublicHeader />
       <main>
         <section className="studio-shell flex min-h-[72vh] flex-col justify-end pb-16 pt-32 md:pb-24">

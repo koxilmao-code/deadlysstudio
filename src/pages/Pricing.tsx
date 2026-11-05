@@ -3,7 +3,7 @@ import { PlanGrid } from "@/components/PlanGrid";
 
 export default function Pricing() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="public-page min-h-screen bg-background">
       <PublicHeader />
       <main className="studio-shell pb-24 pt-32">
         <p className="section-index">Pricing</p>

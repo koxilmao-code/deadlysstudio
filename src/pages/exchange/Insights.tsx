@@ -81,7 +81,7 @@ export function AnalyticsView({ mode }: { mode: "analytics" | "revenue" | "perfo
         {!games.data?.length ? <NoGames /> : snapsQ.isLoading ? <div className="h-64 animate-pulse bg-card" /> : !snaps.length ? <Unavailable what="Data for this game in this period" /> : (
           <div className="space-y-6">
             {mode === "analytics" && (<>
-              <div className="grid grid-cols-2 border border-border bg-card md:grid-cols-5">
+              <div className="grid grid-cols-2 overflow-hidden rounded-3xl border border-border bg-card md:grid-cols-5">
                 <Stat label="Visits" value={fmt(last(snaps, "visits"))} hint={delta(snaps, "visits") ?? undefined} />
                 <Stat label="Concurrent" value={fmt(last(snaps, "ccu"))} />
                 <Stat label="Avg session" value={last(snaps, "avg_session_seconds") != null ? `${Math.round(last(snaps, "avg_session_seconds") / 60)}m` : null} />
@@ -90,7 +90,7 @@ export function AnalyticsView({ mode }: { mode: "analytics" | "revenue" | "perfo
               </div>
               <Panel title="Visits & concurrent players"><Chart data={snaps} keys={["visits", "ccu"]} /></Panel>
               {advanced ? (<>
-                <div className="grid grid-cols-3 border border-border bg-card">
+                <div className="grid grid-cols-3 overflow-hidden rounded-3xl border border-border bg-card">
                   <Stat label="D1 retention" value={pct(last(snaps, "d1_retention"))} />
                   <Stat label="D7 retention" value={pct(last(snaps, "d7_retention"))} />
                   <Stat label="D30 retention" value={pct(last(snaps, "d30_retention"))} />
@@ -101,7 +101,7 @@ export function AnalyticsView({ mode }: { mode: "analytics" | "revenue" | "perfo
             {mode === "revenue" && (() => {
               const rev = sum(snaps, "revenue"), payers = sum(snaps, "paying_users"), players = sum(snaps, "new_players");
               return (<>
-                <div className="grid grid-cols-2 border border-border bg-card md:grid-cols-4">
+                <div className="grid grid-cols-2 overflow-hidden rounded-3xl border border-border bg-card md:grid-cols-4">
                   <Stat label="Revenue" value={fmt(rev, 2)} />
                   <Stat label="Purchases" value={fmt(sum(snaps, "purchases"))} />
                   <Stat label="Revenue / player" value={rev != null && players ? fmt(rev / players, 3) : null} />

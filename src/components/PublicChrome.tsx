@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { BarChart3, Brush, CreditCard, Home, LayoutDashboard, Search, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,20 @@ const RAIL = [
   { to: "/#team", label: "Team", icon: Users },
   { to: "/exchange", label: "Dashboard", icon: LayoutDashboard },
 ];
+
+/** Router links don't scroll to #sections on their own; do it once the section exists. */
+function useHashScroll() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (!hash) return;
+    let tries = 0;
+    const id = window.setInterval(() => {
+      const el = document.getElementById(decodeURIComponent(hash.slice(1)));
+      if (el || ++tries > 20) { window.clearInterval(id); el?.scrollIntoView({ behavior: "smooth", block: "start" }); }
+    }, 50);
+    return () => window.clearInterval(id);
+  }, [pathname, hash]);
+}
 
 function useActive() {
   const { pathname, hash } = useLocation();
@@ -62,6 +77,7 @@ function Rail() {
 export function PublicHeader() {
   const { session } = useSession();
   const active = useActive();
+  useHashScroll();
   const pills = (
     <>
       {PILLS.map(({ to, label }) => (

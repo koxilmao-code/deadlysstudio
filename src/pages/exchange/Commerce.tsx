@@ -183,7 +183,7 @@ export function CreativeStudio() {
         <span className="whitespace-nowrap text-xs">Open →</span>
       </Link>
       <Gate min="starter" next="/exchange/creative">
-        <div className="mb-6 grid grid-cols-2 border border-border bg-card">
+        <div className="mb-6 grid grid-cols-2 overflow-hidden rounded-3xl border border-border bg-card">
           {credits.data?.map((x) => <Stat key={x.kind} label={`${x.kind} credits`} value={`${Math.max(x.allowance - x.used, 0)} / ${x.allowance}`} hint={`remaining · resets each billing cycle`} />)}
         </div>
         <div className="grid gap-6 xl:grid-cols-[1fr_26rem]">

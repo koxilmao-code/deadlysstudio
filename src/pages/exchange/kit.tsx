@@ -27,9 +27,9 @@ export function PageHead({ index, title, desc, children }: { index: string; titl
 
 export function Panel({ title, children, className = "" }: { title?: string; children: ReactNode; className?: string }) {
   return (
-    <section className={`border border-border bg-card ${className}`}>
-      {title && <h2 className="border-b border-border px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground">{title}</h2>}
-      <div className="p-4">{children}</div>
+    <section className={`overflow-hidden rounded-3xl border border-border bg-card ${className}`}>
+      {title && <h2 className="border-b border-border px-5 py-4 text-[15px] font-medium">{title}</h2>}
+      <div className="p-5">{children}</div>
     </section>
   );
 }
@@ -38,7 +38,7 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
   return (
     <div className="border-r border-border p-4 last:border-r-0">
       <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className="mt-2 font-mono text-xl">{value ?? <span className="text-muted-foreground">—</span>}</p>
+      <p className="mt-2 text-2xl font-semibold tabular">{value ?? <span className="text-muted-foreground">—</span>}</p>
       {hint && <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>}
     </div>
   );

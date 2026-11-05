@@ -5,4 +5,6 @@
 - [x] Server: real "pulse" data (top, rising, new tracked games, total players) + tracked rank on game page
 - [x] Tests for daily-bucket / change math
 - [x] Verify desktop, tablet, mobile
-- [ ] Open: staff board needs your account set as admin (waiting on your yes)
+- [ ] Assign Koxilmao as owner and add owner/admin/management/designer/customer support roles with secure role management
+- [ ] Match the creator dashboard and staff workspace to the landing page styling
+- [ ] Verify owner access, role protections, and desktop/mobile dashboard layouts

@@ -996,7 +996,14 @@ export type Database = {
     }
     Enums: {
       ab_asset: "thumbnail" | "icon" | "title" | "promo" | "trailer"
-      app_role: "admin" | "staff" | "user"
+      app_role:
+        | "admin"
+        | "staff"
+        | "user"
+        | "owner"
+        | "management"
+        | "designer"
+        | "customer_support"
       creative_kind: "thumbnail" | "trailer"
       creative_status:
         | "submitted"
@@ -1139,7 +1146,15 @@ export const Constants = {
   public: {
     Enums: {
       ab_asset: ["thumbnail", "icon", "title", "promo", "trailer"],
-      app_role: ["admin", "staff", "user"],
+      app_role: [
+        "admin",
+        "staff",
+        "user",
+        "owner",
+        "management",
+        "designer",
+        "customer_support",
+      ],
       creative_kind: ["thumbnail", "trailer"],
       creative_status: [
         "submitted",

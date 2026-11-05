@@ -919,6 +919,7 @@ export type Database = {
       }
     }
     Functions: {
+      can_manage_team: { Args: { _user_id: string }; Returns: boolean }
       credit_allowance: {
         Args: {
           _kind: Database["public"]["Enums"]["creative_kind"]
@@ -952,9 +953,21 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      list_team_accounts: {
+        Args: never
+        Returns: {
+          display_name: string
+          roles: string[]
+          user_id: string
+        }[]
+      }
       rbx_pulse: { Args: never; Returns: Json }
       request_creative_revision: {
         Args: { _note: string; _request_id: string }
+        Returns: undefined
+      }
+      set_team_role: {
+        Args: { _role: string; _user_id: string }
         Returns: undefined
       }
       submit_creative_request: {
@@ -996,7 +1009,14 @@ export type Database = {
     }
     Enums: {
       ab_asset: "thumbnail" | "icon" | "title" | "promo" | "trailer"
-      app_role: "admin" | "staff" | "user"
+      app_role:
+        | "admin"
+        | "staff"
+        | "user"
+        | "owner"
+        | "management"
+        | "designer"
+        | "customer_support"
       creative_kind: "thumbnail" | "trailer"
       creative_status:
         | "submitted"
@@ -1139,7 +1159,15 @@ export const Constants = {
   public: {
     Enums: {
       ab_asset: ["thumbnail", "icon", "title", "promo", "trailer"],
-      app_role: ["admin", "staff", "user"],
+      app_role: [
+        "admin",
+        "staff",
+        "user",
+        "owner",
+        "management",
+        "designer",
+        "customer_support",
+      ],
       creative_kind: ["thumbnail", "trailer"],
       creative_status: [
         "submitted",

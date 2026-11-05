@@ -69,7 +69,7 @@ export default function Overview() {
   return (
     <>
       <PageHead index="01 / Overview" title="Overview" desc="Your games, plan and creative credits." />
-      <div className="mb-6 grid grid-cols-2 border border-border bg-card md:grid-cols-4">
+      <div className="mb-6 grid grid-cols-2 overflow-hidden rounded-3xl border border-border bg-card md:grid-cols-4">
         <Stat label="Plan" value={tierName(tier)} hint={periodEnd && tier !== "free" ? `Renews ${new Date(periodEnd).toLocaleDateString()}` : undefined} />
         <Stat label="Games" value={games.data?.length ?? 0} />
         <Stat label="Thumbnail credits" value={thumb ? `${Math.max(thumb.allowance - thumb.used, 0)} / ${thumb.allowance}` : "—"} hint="remaining this cycle" />

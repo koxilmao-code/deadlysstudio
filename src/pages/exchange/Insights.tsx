@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
+import { LineCard } from "@/components/analytics/charts";
+import { compact } from "@/lib/rbx";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession, atLeast } from "@/hooks/useSession";
 import { GENRES, PLATFORMS } from "@/lib/platforms";
@@ -20,9 +21,9 @@ function useRange() {
   const ui = (
     <div className="flex flex-wrap items-center gap-1">
       {(["24H", "7D", "30D", "90D", "1Y", "CUSTOM"] as Range[]).map((r) => (
-        <button key={r} onClick={() => setRange(r)} className={`border px-2 py-1 font-mono text-[11px] ${range === r ? "border-foreground" : "border-border text-muted-foreground"}`}>{r}</button>
+        <button key={r} onClick={() => setRange(r)} className={`rounded-full px-3 py-1 text-xs transition-colors ${range === r ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"}`}>{r}</button>
       ))}
-      {range === "CUSTOM" && <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="h-7 border border-border bg-background px-2 text-xs" />}
+      {range === "CUSTOM" && <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="h-7 rounded-full border border-border bg-background px-3 text-xs" />}
     </div>
   );
   return { since, ui };
@@ -38,20 +39,25 @@ const delta = (s: Snapshot[], k: string) => {
   return `${(((Number(pts[pts.length - 1][k]) - Number(pts[0][k])) / Number(pts[0][k])) * 100).toFixed(1)}% vs start`;
 };
 
+const LABEL: Record<string, string> = { visits: "Visits", ccu: "Players online", new_players: "New players", returning_players: "Returning players", revenue: "Revenue" };
+
+/** One simple area chart per metric, same look as the landing page charts. */
 function Chart({ data, keys }: { data: Snapshot[]; keys: string[] }) {
   const usable = keys.filter((k) => data.some((d) => d[k] != null));
   if (data.length < 2 || !usable.length) return <Unavailable what="Trend data" />;
+  const hourly = (Date.parse(data.at(-1)!.captured_at) - Date.parse(data[0].captured_at)) < 2 * 864e5;
   return (
-    <div className="h-64">
-      <ResponsiveContainer>
-        <LineChart data={data.map((d) => ({ ...d, t: new Date(d.captured_at).toLocaleDateString() }))}>
-          <CartesianGrid stroke="hsl(var(--border))" vertical={false} />
-          <XAxis dataKey="t" stroke="hsl(var(--muted-foreground))" fontSize={11} />
-          <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} />
-          <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }} />
-          {usable.map((k, i) => <Line key={k} dataKey={k} dot={false} stroke={i ? "hsl(var(--muted-foreground))" : "hsl(var(--foreground))"} strokeWidth={1.5} />)}
-        </LineChart>
-      </ResponsiveContainer>
+    <div className={`grid gap-6 ${usable.length > 1 ? "md:grid-cols-2" : ""}`}>
+      {usable.map((k) => {
+        const pts = data.filter((d) => d[k] != null).map((d) => ({ t: d.captured_at, v: Number(d[k]) }));
+        return (
+          <div key={k}>
+            <p className="text-xs text-muted-foreground">{LABEL[k] ?? k}</p>
+            <p className="mb-3 text-2xl font-semibold tabular">{compact(pts.at(-1)!.v)}</p>
+            <LineCard data={pts} hourly={hourly} />
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -88,7 +94,7 @@ export function AnalyticsView({ mode }: { mode: "analytics" | "revenue" | "perfo
                 <Stat label="New players" value={fmt(sum(snaps, "new_players"))} />
                 <Stat label="Returning" value={fmt(sum(snaps, "returning_players"))} />
               </div>
-              <Panel title="Visits & concurrent players"><Chart data={snaps} keys={["visits", "ccu"]} /></Panel>
+              <Panel title="Visits & players online"><Chart data={snaps} keys={["visits", "ccu"]} /></Panel>
               {advanced ? (<>
                 <div className="grid grid-cols-3 overflow-hidden rounded-3xl border border-border bg-card">
                   <Stat label="D1 retention" value={pct(last(snaps, "d1_retention"))} />

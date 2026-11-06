@@ -20,7 +20,7 @@ export default function ExchangeLayout() {
             <span className="hidden border-l border-border pl-4 text-xs text-muted-foreground sm:block">Creator Exchange</span>
           </div>
           <div className="flex items-center gap-3 text-xs">
-            <span className="border border-border px-2 py-1 font-mono uppercase">{tierName(tier)}</span>
+            <span className="rounded-full border border-border px-3 py-1">{tierName(tier)}</span>
             {isStaff && <Link to="/admin" className="text-muted-foreground hover:text-foreground">Staff</Link>}
             {session ? (
               <Button size="sm" variant="ghost" onClick={signOut}>Sign out</Button>
@@ -34,7 +34,7 @@ export default function ExchangeLayout() {
         <nav aria-label="Exchange" className="flex gap-1 overflow-x-auto border-b border-border p-2 lg:min-h-[calc(100vh-3.5rem)] lg:flex-col lg:border-b-0 lg:border-r lg:p-3">
           {NAV.map(([to, label]) => (
             <NavLink key={to} to={`/exchange${to ? "/" + to : ""}`} end
-              className={({ isActive }) => `whitespace-nowrap px-3 py-2 text-xs transition-colors ${isActive ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+              className={({ isActive }) => `whitespace-nowrap rounded-xl px-3 py-2 text-sm transition-colors ${isActive ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
               {label}
             </NavLink>
           ))}

@@ -27,7 +27,7 @@ export function PageHead({ index, title, desc, children }: { index: string; titl
 
 export function Panel({ title, children, className = "" }: { title?: string; children: ReactNode; className?: string }) {
   return (
-    <section className={`overflow-hidden rounded-3xl border border-border bg-card ${className}`}>
+    <section className={`terminal-card overflow-hidden ${className}`}>
       {title && <h2 className="border-b border-border px-5 py-4 text-[15px] font-medium">{title}</h2>}
       <div className="p-5">{children}</div>
     </section>
@@ -46,7 +46,7 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
 
 export function Unavailable({ what = "This metric" }: { what?: string }) {
   return (
-    <div className="border border-dashed border-border p-6 text-sm text-muted-foreground">
+    <div className="rounded-2xl border border-dashed border-border p-6 text-sm text-muted-foreground">
       {what} has no readings yet. Outrun records a new reading every 10 minutes from the first lookup, so check back shortly.
     </div>
   );
@@ -122,7 +122,7 @@ export const fmt = (n: number | null | undefined, d = 0) =>
 
 export function GamePicker({ games, value, onChange }: { games: Game[]; value?: string; onChange: (id: string) => void }) {
   return (
-    <select value={value ?? ""} onChange={(e) => onChange(e.target.value)} className="h-9 border border-border bg-background px-3 text-sm">
+    <select value={value ?? ""} onChange={(e) => onChange(e.target.value)} className="h-9 rounded-full border border-border bg-background px-4 text-sm">
       {games.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
     </select>
   );

@@ -39,6 +39,12 @@ const delta = (s: Snapshot[], k: string) => {
   return `${(((Number(pts[pts.length - 1][k]) - Number(pts[0][k])) / Number(pts[0][k])) * 100).toFixed(1)}% vs start`;
 };
 
+const change = (s: Snapshot[], k: string) => {
+  const pts = s.filter((x) => x[k] != null);
+  if (pts.length < 2 || !Number(pts[0][k])) return null;
+  return (Number(pts[pts.length - 1][k]) - Number(pts[0][k])) / Number(pts[0][k]);
+};
+
 const LABEL: Record<string, string> = { visits: "Visits", ccu: "Players online", new_players: "New players", returning_players: "Returning players", revenue: "Revenue" };
 
 /** One simple area chart per metric, same look as the landing page charts. */
@@ -86,26 +92,31 @@ export function AnalyticsView({ mode }: { mode: "analytics" | "revenue" | "perfo
       <Gate min={min} next={`/exchange/${mode}`}>
         {!games.data?.length ? <NoGames /> : snapsQ.isLoading ? <div className="h-64 animate-pulse bg-card" /> : !snaps.length ? <Unavailable what="Data for this game in this period" /> : (
           <div className="space-y-6">
-            {mode === "analytics" && (<>
-              <div className="grid grid-cols-2 overflow-hidden rounded-3xl border border-border bg-card md:grid-cols-5">
-                <Stat label="Visits" value={fmt(last(snaps, "visits"))} hint={delta(snaps, "visits") ?? undefined} />
-                <Stat label="Concurrent" value={fmt(last(snaps, "ccu"))} />
-                <Stat label="Avg session" value={last(snaps, "avg_session_seconds") != null ? `${Math.round(last(snaps, "avg_session_seconds") / 60)}m` : null} />
-                <Stat label="New players" value={fmt(sum(snaps, "new_players"))} />
-                <Stat label="Returning" value={fmt(sum(snaps, "returning_players"))} />
-              </div>
-              <Panel title="Visits & players online"><Chart data={snaps} keys={["visits", "ccu"]} /></Panel>
-              {advanced ? (<>
-                <div className="grid grid-cols-3 overflow-hidden rounded-3xl border border-border bg-card">
-                  <Stat label="D1 retention" value={pct(last(snaps, "d1_retention"))} />
-                  <Stat label="D7 retention" value={pct(last(snaps, "d7_retention"))} />
-                  <Stat label="D30 retention" value={pct(last(snaps, "d30_retention"))} />
+            {mode === "analytics" && (() => {
+              const stats = ([
+                ["Players online", fmt(last(snaps, "ccu")), "People in your game right now."],
+                ["Total visits", fmt(last(snaps, "visits")), delta(snaps, "visits") ?? "Every time someone joined."],
+                ["Favorites", fmt(last(snaps, "favorites")), "Players who saved your game."],
+                ["Likes", fmt(last(snaps, "likes")), "Thumbs up from players."],
+                ["Avg session", last(snaps, "avg_session_seconds") != null ? `${Math.round(last(snaps, "avg_session_seconds") / 60)}m` : null, "How long a visit lasts."],
+                ["New players", fmt(sum(snaps, "new_players")), "First-time players in this period."],
+                ["D7 retention", advanced ? pct(last(snaps, "d7_retention")) : null, "Players still coming back after a week."],
+              ] as const).filter((s) => s[1] != null);
+              const hasPrivate = ["new_players", "d7_retention", "revenue"].some((k) => snaps.some((x) => x[k] != null));
+              return (<>
+                <p className="text-xs text-muted-foreground">Tracking since {new Date(snaps[0].captured_at).toLocaleString()}</p>
+                <div className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-border bg-border md:grid-cols-4">
+                  {stats.map(([l, v, h]) => <div key={l} className="bg-card"><Stat label={l} value={v} hint={h} /></div>)}
                 </div>
-                <Panel title="Player engagement"><Chart data={snaps} keys={["new_players", "returning_players"]} /></Panel>
-              </>) : <Panel><p className="text-sm text-muted-foreground">Retention and engagement metrics are included from the Starter plan.</p></Panel>}
-            </>)}
+                <Panel title="Players online & visits"><Chart data={snaps} keys={["ccu", "visits"]} /></Panel>
+                {advanced && hasPrivate && <Panel title="New & returning players"><Chart data={snaps} keys={["new_players", "returning_players"]} /></Panel>}
+                {!hasPrivate && <p className="text-sm text-muted-foreground">Retention, session length and revenue come from Roblox's private stats, which aren't connected for this game yet. Everything above is public data we record ourselves.</p>}
+                {!advanced && hasPrivate && <p className="text-sm text-muted-foreground">Retention and engagement graphs are included from the Starter plan.</p>}
+              </>);
+            })()}
             {mode === "revenue" && (() => {
               const rev = sum(snaps, "revenue"), payers = sum(snaps, "paying_users"), players = sum(snaps, "new_players");
+              if (rev == null) return <Panel><p className="text-sm text-muted-foreground">Roblox keeps a game's earnings private, so revenue shows up here only once the game's private stats are connected. For a rough figure, open the game from the search on the front page — it shows an estimate.</p></Panel>;
               return (<>
                 <div className="grid grid-cols-2 overflow-hidden rounded-3xl border border-border bg-card md:grid-cols-4">
                   <Stat label="Revenue" value={fmt(rev, 2)} />
@@ -117,13 +128,18 @@ export function AnalyticsView({ mode }: { mode: "analytics" | "revenue" | "perfo
               </>);
             })()}
             {mode === "performance" && (
-              <Panel title="Game health — direction of each signal across the selected period">
-                <table className="w-full text-sm"><tbody>
-                  {([["Player growth", "visits"], ["Engagement", "avg_session_seconds"], ["Retention", "d7_retention"], ["Revenue", "revenue"], ["Discovery", "favorites"], ["Creative performance", "likes"]] as const).map(([l, k]) => (
-                    <tr key={l} className="border-t border-border first:border-0"><td className="py-2">{l}</td><td className="text-right font-mono text-xs">{delta(snaps, k) ?? <span className="text-muted-foreground">insufficient data</span>}</td></tr>
-                  ))}
-                </tbody></table>
-                <p className="mt-4 text-xs text-muted-foreground">No combined “health score” is shown — each signal is the plain change between the first and last data point.</p>
+              <Panel title="Is your game growing?">
+                {(() => {
+                  const rows = ([["Players online", "ccu"], ["Visits", "visits"], ["Favorites", "favorites"], ["Likes", "likes"], ["Session length", "avg_session_seconds"], ["Retention", "d7_retention"], ["Revenue", "revenue"]] as const)
+                    .map(([l, k]) => [l, change(snaps, k)] as const).filter((r) => r[1] != null);
+                  if (!rows.length) return <p className="text-sm text-muted-foreground">Not enough readings yet. Check back in a few hours.</p>;
+                  return <ul className="grid gap-3 sm:grid-cols-2">{rows.map(([l, c]) => (
+                    <li key={l} className="rounded-2xl border border-border p-4">
+                      <p className="text-xs text-muted-foreground">{l}</p>
+                      <p className={`mt-1 text-xl font-semibold ${c! > 0 ? "text-primary" : c! < 0 ? "text-destructive" : ""}`}>{c! > 0 ? "▲ Up" : c! < 0 ? "▼ Down" : "■ Flat"} {Math.abs(c! * 100).toFixed(1)}%</p>
+                    </li>))}</ul>;
+                })()}
+                <p className="mt-4 text-xs text-muted-foreground">Compared from the start to the end of the period you picked.</p>
               </Panel>
             )}
           </div>

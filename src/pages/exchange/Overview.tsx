@@ -8,7 +8,33 @@ import { useSession } from "@/hooks/useSession";
 import { PLATFORMS, GENRES, type PlatformId } from "@/lib/platforms";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PageHead, Panel, Stat, SignInPrompt, tierName, useMyGames } from "./kit";
+import { LineCard } from "@/components/analytics/charts";
+import { PageHead, Panel, SignInPrompt, tierName, useMyGames, useSnapshots, fmt, type Game } from "./kit";
+
+const DAY_AGO = () => new Date(Date.now() - 864e5).toISOString();
+
+function GameCard({ game }: { game: Game }) {
+  const [since] = useState(DAY_AGO);
+  const q = useSnapshots(game, since);
+  const s = q.data ?? [];
+  const pts = s.filter((x) => x.ccu != null).map((x) => ({ t: x.captured_at, v: Number(x.ccu) }));
+  const latest = s.at(-1);
+  return (
+    <Link to="/exchange/analytics" className="terminal-card block p-5 transition-transform hover:-translate-y-0.5">
+      <div className="flex items-baseline justify-between gap-3">
+        <p className="truncate font-medium">{game.name}</p>
+        <span className="text-xs text-muted-foreground">{PLATFORMS[game.platform].label}</span>
+      </div>
+      <div className="mt-4 flex gap-8">
+        <div><p className="text-xs text-muted-foreground">Players online</p><p className="text-2xl font-semibold tabular">{fmt(latest?.ccu) ?? "…"}</p></div>
+        <div><p className="text-xs text-muted-foreground">Total visits</p><p className="text-2xl font-semibold tabular">{fmt(latest?.visits) ?? "…"}</p></div>
+      </div>
+      <div className="mt-4">
+        {pts.length >= 2 ? <LineCard data={pts} hourly /> : <p className="text-xs text-muted-foreground">{q.isLoading ? "Loading…" : "Graph appears after a couple of readings."}</p>}
+      </div>
+    </Link>
+  );
+}
 
 const gameSchema = z.object({
   name: z.string().trim().min(1, "Name required").max(120),
@@ -68,13 +94,25 @@ export default function Overview() {
 
   return (
     <>
-      <PageHead index="01 / Overview" title="Overview" desc="Your games, plan and creative credits." />
-      <div className="mb-6 grid grid-cols-2 overflow-hidden rounded-3xl border border-border bg-card md:grid-cols-4">
-        <Stat label="Plan" value={tierName(tier)} hint={periodEnd && tier !== "free" ? `Renews ${new Date(periodEnd).toLocaleDateString()}` : undefined} />
-        <Stat label="Games" value={games.data?.length ?? 0} />
-        <Stat label="Thumbnail credits" value={thumb ? `${Math.max(thumb.allowance - thumb.used, 0)} / ${thumb.allowance}` : "—"} hint="remaining this cycle" />
-        <Stat label="Trailer credits" value={trailer ? `${Math.max(trailer.allowance - trailer.used, 0)} / ${trailer.allowance}` : "—"} hint="Enterprise only" />
-      </div>
+      <PageHead index="01 / Home" title="Your games, at a glance." desc="Live players and visits for every game you add. Open one for the full graphs." />
+      <p className="mb-6 text-sm text-muted-foreground">
+        <span className="text-foreground">{tierName(tier)} plan</span>
+        {periodEnd && tier !== "free" && ` · renews ${new Date(periodEnd).toLocaleDateString()}`}
+        {thumb && thumb.allowance > 0 && ` · ${Math.max(thumb.allowance - thumb.used, 0)} of ${thumb.allowance} thumbnails left`}
+        {trailer && trailer.allowance > 0 && ` · ${Math.max(trailer.allowance - trailer.used, 0)} of ${trailer.allowance} trailers left`}
+        {tier === "free" && <> · <Link className="underline" to="/exchange/subscription">upgrade</Link></>}
+      </p>
+      {games.data?.length ? (
+        <div className="mb-8 grid gap-4 md:grid-cols-2">{games.data.map((g) => <GameCard key={g.id} game={g} />)}</div>
+      ) : (
+        <Panel className="mb-8">
+          <ol className="grid gap-4 text-sm md:grid-cols-3">
+            {["Add your Roblox game below.", "We start recording players and visits every 10 minutes.", "Come back in a few hours — your graphs fill in automatically."].map((s, i) => (
+              <li key={s}><p className="section-index">0{i + 1}</p><p className="mt-2">{s}</p></li>
+            ))}
+          </ol>
+        </Panel>
+      )}
       <div className="grid gap-6 xl:grid-cols-[1fr_24rem]">
         <Panel title="Your games">
           {games.data?.length ? (

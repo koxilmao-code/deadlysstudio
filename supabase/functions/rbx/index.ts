@@ -132,9 +132,10 @@ Deno.serve(async (req) => {
       return out({ polled: ids.length, since });
     }
 
+    const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, { auth: { persistSession: false } });
+    const token = req.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") ?? "";
+    const { data: { user } } = token ? await anon.auth.getUser(token) : { data: { user: null } };
     if (GATED_RANGES.has(b.range)) {
-      const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, { auth: { persistSession: false } });
-      const { data: { user } } = await anon.auth.getUser(req.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") ?? "");
       if (!user) return out({ error: "90d and 1y ranges are included with the Starter plan — sign in to continue." }, 401);
       const { data: sub } = await c.from("subscriptions").select("tier,status,current_period_end,stripe_subscription_id").eq("user_id", user.id).maybeSingle();
       if (!meetsTier(sub, "starter")) {
@@ -144,8 +145,9 @@ Deno.serve(async (req) => {
     const [live] = await fetchLive([b.id]);
     if (!live) return out({ error: "Game not found" }, 404);
     const { data: last } = await c.from("rbx_snapshots").select("captured_at").eq("universe_id", b.id).order("captured_at", { ascending: false }).limit(1).maybeSingle();
-    if (!last || Date.now() - new Date(last.captured_at).getTime() > MIN_GAP_MS) await record([live]);
-    else await c.from("rbx_universes").upsert(universeRow(live));
+    // Only signed-in accounts may start tracking a new game; already-tracked games keep refreshing.
+    if (!last && !user) { /* view live numbers only, nothing recorded */ }
+    else if (!last || Date.now() - new Date(last.captured_at).getTime() > MIN_GAP_MS) await record([live]);
 
     const from = new Date(Date.now() - RANGE_MS[b.range]).toISOString();
     const { data: history } = await c.from("rbx_snapshots").select("captured_at,playing,visits,favorites,up_votes,down_votes")

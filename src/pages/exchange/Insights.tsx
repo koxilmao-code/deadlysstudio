@@ -116,6 +116,7 @@ export function AnalyticsView({ mode }: { mode: "analytics" | "revenue" | "perfo
             })()}
             {mode === "revenue" && (() => {
               const rev = sum(snaps, "revenue"), payers = sum(snaps, "paying_users"), players = sum(snaps, "new_players");
+              if (rev == null) return <Panel><p className="text-sm text-muted-foreground">Roblox keeps a game's earnings private, so revenue shows up here only once the game's private stats are connected. For a rough figure, open the game from the search on the front page — it shows an estimate.</p></Panel>;
               return (<>
                 <div className="grid grid-cols-2 overflow-hidden rounded-3xl border border-border bg-card md:grid-cols-4">
                   <Stat label="Revenue" value={fmt(rev, 2)} />

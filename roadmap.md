@@ -8,3 +8,5 @@
 - [x] Assign Koxilmao as owner and add owner/admin/management/designer/customer support roles with secure role management
 - [ ] Match the creator dashboard and staff workspace to the landing page styling
 - [ ] Verify owner access, role protections, and desktop/mobile dashboard layouts
+- [x] Fix Compare games: search any Roblox game, compare 2–4 side by side
+- [ ] Later update — discovery lists: Trending Now, Fastest Growing, Rising, New Releases, Upcoming, Recently Updated, Hidden Gems, Dead Games Revival, Most Consistent, Highest Retention (needs private stats), Top Earning Estimates

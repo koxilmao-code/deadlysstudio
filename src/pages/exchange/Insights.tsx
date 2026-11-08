@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { LineCard } from "@/components/analytics/charts";
-import { compact } from "@/lib/rbx";
+import { compact, fetchReport, momentum, peakCcu, searchGames, type GameReport, type SearchHit } from "@/lib/rbx";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession, atLeast } from "@/hooks/useSession";
 import { GENRES, PLATFORMS } from "@/lib/platforms";
@@ -213,33 +213,72 @@ export function Trending() {
   );
 }
 
+const MAX_CMP = 4;
+/** Pick any Roblox game by name; live search, no prior tracking needed. */
+function CmpSearch({ onPick, taken }: { onPick: (h: SearchHit) => void; taken: number[] }) {
+  const [q, setQ] = useState("");
+  const r = useQuery({ queryKey: ["cmp-search", q], enabled: q.trim().length >= 2, queryFn: () => searchGames(q.trim()), staleTime: 6e4 });
+  return (
+    <div className="relative w-full max-w-md">
+      <input value={q} onChange={(e) => setQ(e.target.value.slice(0, 80))} placeholder="Add a Roblox game to compare…" className="h-11 w-full rounded-full border border-border bg-card px-5 text-sm outline-none focus:border-foreground/40" />
+      {q.trim().length >= 2 && (
+        <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
+          {r.isLoading ? <p className="p-4 text-sm text-muted-foreground">Searching…</p> : !r.data?.length ? <p className="p-4 text-sm text-muted-foreground">No games found.</p> :
+            r.data.slice(0, 6).map((h) => (
+              <button key={h.universeId} disabled={taken.includes(h.universeId)} onClick={() => { onPick(h); setQ(""); }} className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm hover:bg-secondary disabled:opacity-40">
+                {h.icon ? <img src={h.icon} alt="" className="h-8 w-8 rounded-lg" /> : <div className="h-8 w-8 rounded-lg bg-secondary" />}
+                <span className="flex-1 truncate">{h.name}</span><span className="text-xs text-muted-foreground">{compact(h.playing)} playing</span>
+              </button>))}
+        </div>)}
+    </div>
+  );
+}
+
 export function Competitors() {
-  const q = usePublicGames();
-  const [a, setA] = useState(""); const [b, setB] = useState("");
-  const all = q.data ?? [];
-  const ga = all.find((g) => g.id === a), gb = all.find((g) => g.id === b);
-  const metrics: [string, (g?: Row) => string | null][] = [
-    ["Visits", (g) => fmt(g?.latest?.visits)], ["Concurrent players", (g) => fmt(g?.latest?.ccu)],
-    ["Favorites", (g) => fmt(g?.latest?.favorites)], ["Likes", (g) => fmt(g?.latest?.likes)],
-    ["14-day growth", (g) => (g?.growth == null ? null : `${(g.growth * 100).toFixed(1)}%`)],
+  const [picked, setPicked] = useState<SearchHit[]>([]);
+  const reports = useQueries({ queries: picked.map((h) => ({ queryKey: ["cmp-report", h.universeId], queryFn: () => fetchReport(h.universeId, "7d"), staleTime: 6e4 })) });
+  const rows: [string, (r: GameReport) => string | null][] = [
+    ["Playing now", (r) => fmt(r.game.playing)],
+    ["Peak (7 days)", (r) => (r.history.length ? fmt(peakCcu(r.history)) : null)],
+    ["Total visits", (r) => fmt(r.game.visits)],
+    ["Favorites", (r) => fmt(r.game.favorites)],
+    ["Like ratio", (r) => { const t = r.game.up_votes + r.game.down_votes; return t ? `${Math.round((r.game.up_votes / t) * 100)}%` : null; }],
+    ["Trend", (r) => { const m = momentum(r.history); return m == null ? null : `${m >= 0 ? "▲" : "▼"} ${Math.abs(m).toFixed(1)}%`; }],
   ];
   return (
     <>
-      <PageHead index="09 / Competitors" title="Competitor Insights" desc="Compare public games side by side. Only public metrics are shown — private data like revenue and retention never leaves its owner." />
+      <PageHead index="09 / Compare" title="Compare games" desc="Search any Roblox games and see them side by side. Public numbers only." />
       <Gate min="starter" next="/exchange/competitors">
-        <div className="mb-4 flex flex-wrap items-center gap-3">
-          <GamePicker games={[{ id: "", name: "Select game A" } as Game, ...all]} value={a} onChange={setA} />
-          <span className="text-xs text-muted-foreground">vs</span>
-          <GamePicker games={[{ id: "", name: "Select game B" } as Game, ...all]} value={b} onChange={setB} />
+        <div className="mb-6 flex flex-wrap items-center gap-3">
+          {picked.length < MAX_CMP && <CmpSearch taken={picked.map((p) => p.universeId)} onPick={(h) => setPicked((p) => [...p, h].slice(0, MAX_CMP))} />}
+          {picked.map((h) => (
+            <span key={h.universeId} className="flex items-center gap-2 rounded-full border border-border bg-card py-1 pl-1 pr-3 text-sm">
+              {h.icon && <img src={h.icon} alt="" className="h-7 w-7 rounded-full" />}{h.name}
+              <button aria-label={`Remove ${h.name}`} onClick={() => setPicked((p) => p.filter((x) => x.universeId !== h.universeId))} className="text-muted-foreground hover:text-foreground">×</button>
+            </span>))}
         </div>
-        <Panel>
-          <table className="w-full text-sm">
-            <thead><tr className="text-left text-[11px] uppercase text-muted-foreground"><th className="pb-2">Metric</th><th>{ga?.name ?? "Game A"}</th><th>{gb?.name ?? "Game B"}</th></tr></thead>
-            <tbody>{metrics.map(([l, f]) => (
-              <tr key={l} className="border-t border-border"><td className="py-2">{l}</td><td className="font-mono">{f(ga) ?? "—"}</td><td className="font-mono">{f(gb) ?? "—"}</td></tr>
-            ))}</tbody>
-          </table>
-        </Panel>
+        {picked.length < 2 ? <Panel><p className="text-sm text-muted-foreground">Add at least two games to compare them. You can add up to {MAX_CMP}.</p></Panel> : (
+          <div className="space-y-6">
+            <Panel>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead><tr className="text-left text-xs text-muted-foreground"><th className="pb-3 pr-4 font-normal"></th>{picked.map((h) => <th key={h.universeId} className="pb-3 pr-4 font-medium text-foreground">{h.name}</th>)}</tr></thead>
+                  <tbody>{rows.map(([l, f]) => (
+                    <tr key={l} className="border-t border-border"><td className="py-3 pr-4 text-muted-foreground">{l}</td>
+                      {reports.map((q, i) => <td key={picked[i].universeId} className="py-3 pr-4 tabular">{q.isLoading ? "…" : q.data ? f(q.data) ?? "—" : "Failed"}</td>)}
+                    </tr>))}</tbody>
+                </table>
+              </div>
+            </Panel>
+            <div className="grid gap-6 md:grid-cols-2">
+              {reports.map((q, i) => (
+                <Panel key={picked[i].universeId} title={`${picked[i].name} · players`}>
+                  {q.isLoading ? <div className="h-48 animate-pulse rounded-2xl bg-secondary" /> : q.data && q.data.history.length >= 2
+                    ? <LineCard data={q.data.history.map((p) => ({ t: p.captured_at, v: p.playing }))} hourly />
+                    : <p className="text-sm text-muted-foreground">Graph starts filling now — we record a reading every 10 minutes from today.</p>}
+                </Panel>))}
+            </div>
+          </div>)}
       </Gate>
     </>
   );

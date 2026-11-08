@@ -11,7 +11,7 @@ export const Odometer = memo(function Odometer({ value, className = "" }: { valu
     <span className={`inline-flex tabular ${className}`} aria-label={text}>
       {text.split("").map((ch, i) => {
         const d = DIGITS.indexOf(ch);
-        if (d < 0) return <span key={`s${i}`} aria-hidden>{ch}</span>;
+        if (d < 0) return <span key={`s${i}`} aria-hidden className="inline-block h-[1em] leading-none">{ch}</span>;
         return (
           <span key={`${text.length - i}`} aria-hidden className="relative inline-block h-[1em] overflow-hidden leading-none">
             <span className="flex flex-col transition-transform duration-700 ease-out" style={{ transform: `translateY(-${d * 10}%)` }}>

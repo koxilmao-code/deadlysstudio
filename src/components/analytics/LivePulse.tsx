@@ -7,8 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { compact, fetchPulse, pctChange, type PulseGame } from "@/lib/rbx";
 import { LineCard } from "./charts";
 import { Delta, LiveBadge } from "./GameOverview";
-
-const exact = (n: number) => Math.round(n).toLocaleString();
+import { Odometer, TopRace } from "./TopRace";
 
 function Panel({ title, note, badge, children, className = "" }: { title: string; note?: string; badge?: ReactNode; children: ReactNode; className?: string }) {
   return (
@@ -80,7 +79,7 @@ export function LivePulse() {
     <div className="grid gap-4 lg:grid-cols-3">
       <Panel className="lg:col-span-2" title="Players right now" note={`Across ${p.tracked} games Outrun tracks · updated ${updated}`} badge={<LiveBadge />}>
         <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <p className="text-3xl font-semibold tabular md:text-5xl">{exact(p.totalNow)}</p>
+          <p className="text-3xl font-semibold md:text-5xl"><Odometer value={p.totalNow} /></p>
           <Delta v={dayChange} suffix=" vs 24h ago" />
         </div>
         <div className="mt-6 flex-1">
@@ -89,8 +88,8 @@ export function LivePulse() {
         </div>
       </Panel>
 
-      <Panel title="Most played" note="Live players · change vs 24h ago">
-        <List games={top} ranked empty="No games tracked yet. Search one above to start." />
+      <Panel title="Top 5 games" badge={<LiveBadge />}>
+        <TopRace games={p.top} total={p.totalNow} />
       </Panel>
 
       <Panel title="Rising" note="Biggest 24h gains (50+ players a day ago)">

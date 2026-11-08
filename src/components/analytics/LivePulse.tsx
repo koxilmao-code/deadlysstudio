@@ -7,8 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { compact, fetchPulse, pctChange, type PulseGame } from "@/lib/rbx";
 import { LineCard } from "./charts";
 import { Delta, LiveBadge } from "./GameOverview";
-
-const exact = (n: number) => Math.round(n).toLocaleString();
+import { Odometer, TopRace } from "./TopRace";
 
 function Panel({ title, note, badge, children, className = "" }: { title: string; note?: string; badge?: ReactNode; children: ReactNode; className?: string }) {
   return (
@@ -73,14 +72,13 @@ export function LivePulse() {
   const series = p.series.map((s) => ({ t: s.t, v: s.v }));
   const dayChange = series.length > 1 ? pctChange(series[0].v, series.at(-1)!.v) : null;
   const updated = new Date(p.at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  const top = p.top.slice(0, 6);
-  const more = p.top.slice(6, 10);
+  const more = p.top.slice(5, 10);
 
   return (
     <div className="grid gap-4 lg:grid-cols-3">
       <Panel className="lg:col-span-2" title="Players right now" note={`Across ${p.tracked} games Outrun tracks · updated ${updated}`} badge={<LiveBadge />}>
         <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <p className="text-3xl font-semibold tabular md:text-5xl">{exact(p.totalNow)}</p>
+          <p className="text-3xl font-semibold md:text-5xl"><Odometer value={p.totalNow} /></p>
           <Delta v={dayChange} suffix=" vs 24h ago" />
         </div>
         <div className="mt-6 flex-1">
@@ -89,8 +87,8 @@ export function LivePulse() {
         </div>
       </Panel>
 
-      <Panel title="Most played" note="Live players · change vs 24h ago">
-        <List games={top} ranked empty="No games tracked yet. Search one above to start." />
+      <Panel title="Top 5 games" badge={<LiveBadge />}>
+        <TopRace games={p.top} total={p.totalNow} />
       </Panel>
 
       <Panel title="Rising" note="Biggest 24h gains (50+ players a day ago)">
@@ -99,8 +97,8 @@ export function LivePulse() {
       <Panel title="New this season" note="Released in the last 90 days">
         <List games={p.newest} empty="No recently released games tracked yet." />
       </Panel>
-      <Panel title="Rest of the top 10" note="Ranks 7–10 among tracked games">
-        {more.length ? <ol className="mt-4 -mx-2 space-y-0.5">{more.map((g, i) => <Row key={g.id} g={g} n={i + 7} />)}</ol>
+      <Panel title="Rest of the top 10" note="Ranks 6–10 among tracked games">
+        {more.length ? <ol className="mt-4 -mx-2 space-y-0.5">{more.map((g, i) => <Row key={g.id} g={g} n={i + 6} />)}</ol>
           : <List games={[]} empty="More games appear as people search." />}
         <Link to="/#search" className="mt-auto inline-flex items-center gap-1.5 pt-5 text-xs text-muted-foreground transition-colors hover:text-foreground">
           Look up any game <ArrowUpRight className="h-3.5 w-3.5" />

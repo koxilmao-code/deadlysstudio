@@ -72,8 +72,7 @@ export function LivePulse() {
   const series = p.series.map((s) => ({ t: s.t, v: s.v }));
   const dayChange = series.length > 1 ? pctChange(series[0].v, series.at(-1)!.v) : null;
   const updated = new Date(p.at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  const top = p.top.slice(0, 6);
-  const more = p.top.slice(6, 10);
+  const more = p.top.slice(5, 10);
 
   return (
     <div className="grid gap-4 lg:grid-cols-3">
@@ -98,8 +97,8 @@ export function LivePulse() {
       <Panel title="New this season" note="Released in the last 90 days">
         <List games={p.newest} empty="No recently released games tracked yet." />
       </Panel>
-      <Panel title="Rest of the top 10" note="Ranks 7–10 among tracked games">
-        {more.length ? <ol className="mt-4 -mx-2 space-y-0.5">{more.map((g, i) => <Row key={g.id} g={g} n={i + 7} />)}</ol>
+      <Panel title="Rest of the top 10" note="Ranks 6–10 among tracked games">
+        {more.length ? <ol className="mt-4 -mx-2 space-y-0.5">{more.map((g, i) => <Row key={g.id} g={g} n={i + 6} />)}</ol>
           : <List games={[]} empty="More games appear as people search." />}
         <Link to="/#search" className="mt-auto inline-flex items-center gap-1.5 pt-5 text-xs text-muted-foreground transition-colors hover:text-foreground">
           Look up any game <ArrowUpRight className="h-3.5 w-3.5" />
